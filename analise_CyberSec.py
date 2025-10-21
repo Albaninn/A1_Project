@@ -306,6 +306,51 @@ except Exception as e:
     print(f"\nOcorreu um erro durante a otimização do banco de dados: {e}")
 
 # ==============================================================================
+# ANÁLISE DE CATEGORIAS RARAS (ANOMALIAS CATEGÓRICAS)
+# ==============================================================================
+print("\n" + "="*70)
+print("\n--- Análise de Frequência para Detecção de Anomalias Categóricas ---")
+
+try:
+    conn = sqlite3.connect(caminho_db)
+    df_full = pd.read_sql_query(f"SELECT * FROM {NOME_TABELA}", conn)
+    conn.close()
+
+    # Lista das colunas categóricas que queremos analisar
+    colunas_categoricas = [
+        'Attack Source', 'Attack Type', 'Country', 'Defense Mechanism Used', 
+        'Security Vulnerability Type', 'Target Industry', 'Year'
+    ]
+
+    # Define um limite para considerar uma categoria como "rara"
+    limite_contagem_rara = 5 # Menos de 5 ocorrências
+
+    for col in colunas_categoricas:
+        print(f"\n--- Análise da Coluna: '{col}' ---")
+        
+        # Calcula a contagem e o percentual de cada categoria
+        contagens = df_full[col].value_counts()
+        percentuais = df_full[col].value_counts(normalize=True).mul(100).round(2)
+        
+        # Cria um DataFrame para exibir os resultados de forma organizada
+        df_frequencia = pd.DataFrame({'Contagem': contagens, 'Percentual (%)': percentuais})
+        
+        print("Distribuição de todas as categorias:")
+        print(df_frequencia)
+        
+        # Filtra para encontrar as categorias raras (nossas anomalias)
+        anomalias_categoricas = df_frequencia[df_frequencia['Contagem'] < limite_contagem_rara]
+        
+        if not anomalias_categoricas.empty:
+            print(f"\n>> ANOMALIAS ENCONTRADAS (Categorias com menos de {limite_contagem_rara} ocorrências):")
+            print(anomalias_categoricas)
+        else:
+            print(f"\n>> Nenhuma categoria rara encontrada nesta coluna com o limite de {limite_contagem_rara} ocorrências.")
+
+except Exception as e:
+    print(f"Ocorreu um erro durante a análise de anomalias categóricas: {e}")
+    
+# ==============================================================================
 # GERAÇÃO DOS NOVOS GRÁFICOS DE ANÁLISE
 # ==============================================================================
 print("\n" + "="*70)
@@ -342,7 +387,6 @@ try:
 except Exception as e:
     print(f"\nOcorreu um erro ao gerar o Gráfico 1: {e}")
 
-
 # --- GRÁFICO 2: DISPERSÃO - USUÁRIOS AFETADOS VS PREJUÍZO FINANCEIRO ---
 try:
     print("\nGerando Gráfico 2: Usuários Afetados vs. Prejuízo Financeiro...")
@@ -376,7 +420,6 @@ try:
 
 except Exception as e:
     print(f"\nOcorreu um erro ao gerar o Gráfico 2: {e}")
-
 
 # --- GRÁFICO 3: HISTOGRAMA - TEMPO DE RESOLUÇÃO DE INCIDENTES ---
 try:
