@@ -17,11 +17,16 @@ print(f"Início: {horario_inicio_formatado}")
 # DEFINIÇÃO DE CAMINHOS
 # ==============================================================================
 # Caminho da pasta do projeto principal
-caminho_projeto = Path("A1_PROJECT")
+caminho_projeto = Path(".")
+
 # Caminho do arquivo ZIP
 caminho_zip = caminho_projeto / "CyberSec.zip"
+#caminho_zip = "CyberSec.zip"
+
 # O caminho para a PASTA onde os arquivos CSV ficarão
 caminho_pasta_csv = caminho_projeto / "CyberSec"
+#caminho_pasta_csv = "CyberSec"
+
 # Caminho para o arquivo do banco de dados (agora dentro da pasta dos CSVs)
 caminho_db = caminho_pasta_csv / "CyberSec.db" 
 NOME_TABELA = 'CyberSec_data' # Nome da nossa tabela no DB
