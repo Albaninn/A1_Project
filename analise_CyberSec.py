@@ -4,6 +4,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+from sklearn.ensemble import IsolationForest # Import para o modelo de ML
 import glob # Biblioteca para encontrar arquivos que correspondem a um padrão
 import zipfile # Biblioteca para manipular arquivos ZIP
 
@@ -349,7 +350,71 @@ try:
 
 except Exception as e:
     print(f"Ocorreu um erro durante a análise de anomalias categóricas: {e}")
+
+# ==============================================================================
+# ANÁLISE DE ANOMALIAS MULTIVARIADAS (CONEXÃO ENTRE COLUNAS)
+# ==============================================================================
+print("\n" + "="*70)
+print("\n--- Análise de Anomalias Multivariadas (baseada em conexões entre colunas) ---")
+
+try:
+    conn = sqlite3.connect(caminho_db)
+    df_full = pd.read_sql_query(f"SELECT * FROM {NOME_TABELA}", conn)
+    conn.close()
     
+    # --- Técnica 1: Análise Visual (Gráficos de Dispersão Agrupados) ---
+    print("\n--- Técnica 1: Gerando análise visual de anomalias de grupo...")
+    plt.style.use('seaborn-v0_8-whitegrid')
+    plt.figure(figsize=(14, 9))
+    sns.scatterplot(data=df_full, x="Number of Affected Users", y="Financial Loss (in Million $)", hue="Attack Type", palette="viridis", alpha=0.8, s=100)
+    plt.title('Prejuízo vs. Usuários Afetados, Agrupado por Tipo de Ataque', fontsize=16)
+    plt.xlabel('Número de Usuários Afetados', fontsize=12)
+    plt.ylabel('Prejuízo Financeiro (em Milhões de $)', fontsize=12)
+    plt.legend(title='Tipo de Ataque', bbox_to_anchor=(1.05, 1), loc='upper left')
+    
+    caminho_salvar5 = caminho_pasta_csv / "grafico_5_anomalia_multivariada_visual.png"
+    plt.tight_layout()
+    plt.savefig(caminho_salvar5)
+    print(f"Gráfico de dispersão agrupado salvo em: {caminho_salvar5}")
+    plt.close()
+
+    # --- Técnica 2: Análise Estatística Agrupada (Z-Score por Grupo) ---
+    print("\n--- Técnica 2: Análise com Z-Score por Grupo ---")
+    coluna_numerica = "Financial Loss (in Million $)"
+    coluna_grupo = "Attack Type"
+    threshold = 2.5
+
+    df_full['media_grupo'] = df_full.groupby(coluna_grupo)[coluna_numerica].transform('mean')
+    df_full['std_grupo'] = df_full.groupby(coluna_grupo)[coluna_numerica].transform('std')
+    df_full['z_score_grupo'] = (df_full[coluna_numerica] - df_full['media_grupo']) / df_full['std_grupo'].fillna(1)
+
+    anomalias_grupo = df_full[np.abs(df_full['z_score_grupo']) > threshold]
+
+    if not anomalias_grupo.empty:
+        print(f"\n>> Encontradas {len(anomalias_grupo)} anomalias com Z-Score de grupo > {threshold}:")
+        print(anomalias_grupo[[coluna_grupo, coluna_numerica, 'z_score_grupo', 'Target Industry', 'Year']])
+    else:
+        print(f"\n>> Nenhuma anomalia de grupo encontrada com o threshold de {threshold}.")
+
+    # --- Técnica 3: Usando Machine Learning (Isolation Forest) ---
+    print("\n--- Técnica 3: Detecção de Anomalias com Machine Learning (Isolation Forest) ---")
+    df_numeric = df_full.select_dtypes(include=np.number)
+    
+    model = IsolationForest(contamination=0.01, random_state=42)
+    model.fit(df_numeric)
+    df_full['anomalia_ml'] = model.predict(df_numeric)
+    
+    anomalias_ml = df_full[df_full['anomalia_ml'] == -1]
+
+    if not anomalias_ml.empty:
+        print(f"\n>> O modelo de Machine Learning encontrou {len(anomalias_ml)} anomalias potenciais:")
+        print(anomalias_ml)
+    else:
+        print("\n>> Nenhum ponto foi classificado como anomalia pelo modelo.")
+
+except Exception as e:
+    print(f"\nOcorreu um erro durante a análise de anomalias multivariadas: {e}")
+
 # ==============================================================================
 # GERAÇÃO DOS NOVOS GRÁFICOS DE ANÁLISE
 # ==============================================================================
