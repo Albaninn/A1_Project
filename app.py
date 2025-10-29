@@ -3,8 +3,8 @@ import pandas as pd
 import sqlite3
 from pathlib import Path
 import joblib 
-import matplotlib.pyplot as plt # Importação necessária
-import seaborn as sns           # Importação necessária
+import matplotlib.pyplot as plt 
+import seaborn as sns           
 
 # ==============================================================================
 # CONFIGURAÇÃO DA PÁGINA E CAMINHOS
@@ -44,6 +44,15 @@ def carregar_dados_completos(db_path, query):
 modelo = carregar_modelo(CAMINHO_MODELO)
 df_original = carregar_dados_completos(caminho_db, f"SELECT * FROM {NOME_TABELA}")
 
+# Listas de colunas para os seletores do gráfico dinâmico
+colunas_categoricas_plot = [
+    'Attack Source', 'Attack Type', 'Country', 'Defense Mechanism Used', 
+    'Security Vulnerability Type', 'Target Industry', 'Year'
+]
+colunas_numericas_plot = [
+    'Financial Loss (in Million $)', 'Incident Resolution Time (in Hours)', 'Number of Affected Users'
+]
+
 # ==============================================================================
 # INTERFACE DO USUÁRIO (Sidebar de Navegação)
 # ==============================================================================
@@ -55,23 +64,17 @@ pagina = st.sidebar.radio("Selecione uma página:", ["Análise Exploratória", "
 # =_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=
 if pagina == "Análise Exploratória":
     st.title("Painel de Análise Exploratória de Incidentes")
-    st.write("Visualizações interativas sobre os dados de incidentes de segurança.")
+    st.write("Visualizações sobre os dados de incidentes de segurança.")
 
-    # --- CORREÇÃO: Usando Matplotlib/Seaborn em vez de st.bar_chart ---
-    
     # --- Gráfico 1: Impacto Financeiro por Tipo de Ataque ---
     st.header("Gráfico 1: Impacto Financeiro Total por Tipo de Ataque")
     try:
         df_loss = df_original.groupby("Attack Type")["Financial Loss (in Million $)"].sum().reset_index()
-        
-        # Cria a figura com Matplotlib/Seaborn
         fig1, ax1 = plt.subplots(figsize=(12, 6))
         sns.barplot(data=df_loss, x="Attack Type", y="Financial Loss (in Million $)", palette="viridis", ax=ax1)
         ax1.set_title('Impacto Financeiro Total por Tipo de Ataque', fontsize=16)
         ax1.set_xlabel('Tipo de Ataque (Código)', fontsize=12)
         ax1.set_ylabel('Prejuízo Total (em Milhões de $)', fontsize=12)
-        
-        # Exibe no Streamlit
         st.pyplot(fig1)
     except Exception as e:
         st.error(f"Erro ao gerar Gráfico 1: {e}")
@@ -79,21 +82,11 @@ if pagina == "Análise Exploratória":
     # --- Gráfico 2: Relação Usuários Afetados vs. Prejuízo ---
     st.header("Gráfico 2: Relação entre Usuários Afetados e Prejuízo")
     try:
-        # Cria a figura com Matplotlib/Seaborn
         fig2, ax2 = plt.subplots(figsize=(12, 6))
-        sns.regplot(
-            data=df_original, 
-            x="Number of Affected Users", 
-            y="Financial Loss (in Million $)",
-            scatter_kws={'alpha':0.5},
-            line_kws={'color':'red'},
-            ax=ax2
-        )
+        sns.regplot(data=df_original, x="Number of Affected Users", y="Financial Loss (in Million $)", scatter_kws={'alpha':0.5}, line_kws={'color':'red'}, ax=ax2)
         ax2.set_title('Relação entre Usuários Afetados e Prejuízo Financeiro', fontsize=16)
         ax2.set_xlabel('Número de Usuários Afetados', fontsize=12)
         ax2.set_ylabel('Prejuízo (em Milhões de $)', fontsize=12)
-
-        # Exibe no Streamlit
         st.pyplot(fig2)
     except Exception as e:
         st.error(f"Erro ao gerar Gráfico 2: {e}")
@@ -101,24 +94,49 @@ if pagina == "Análise Exploratória":
     # --- Gráfico 3: Distribuição do Tempo de Resolução ---
     st.header("Gráfico 3: Distribuição do Tempo de Resolução de Incidentes")
     try:
-        # Cria a figura com Matplotlib/Seaborn
         fig3, ax3 = plt.subplots(figsize=(12, 6))
         sns.histplot(df_original["Incident Resolution Time (in Hours)"], kde=True, bins=30, ax=ax3)
         ax3.set_title('Distribuição do Tempo de Resolução de Incidentes', fontsize=16)
         ax3.set_xlabel('Tempo de Resolução (em Horas)', fontsize=12)
         ax3.set_ylabel('Frequência (Nº de Incidentes)', fontsize=12)
-        
-        # Exibe no Streamlit
         st.pyplot(fig3)
     except Exception as e:
         st.error(f"Erro ao gerar Gráfico 3: {e}")
+
+    # --- GRÁFICO 4: GERADOR DE GRÁFICO DINÂMICO (NOVO) ---
+    st.header("Gráfico 4: Gerador de Gráfico Dinâmico")
+    st.write("Crie seu próprio gráfico de colunas selecionando as variáveis.")
+    
+    col_x = st.selectbox("Selecione a Categoria (Eixo X):", colunas_categoricas_plot, index=1)
+    col_y = st.selectbox("Selecione o Valor (Eixo Y):", colunas_numericas_plot, index=0)
+    agregacao = st.radio("Selecione a Agregação:", ("Soma", "Média"), horizontal=True)
+
+    try:
+        if agregacao == "Soma":
+            df_dynamic = df_original.groupby(col_x)[col_y].sum().reset_index()
+            titulo_grafico = f'Soma de "{col_y}" por "{col_x}"'
+        else:
+            df_dynamic = df_original.groupby(col_x)[col_y].mean().reset_index()
+            titulo_grafico = f'Média de "{col_y}" por "{col_x}"'
+        
+        # Cria o gráfico
+        fig4, ax4 = plt.subplots(figsize=(12, 6))
+        sns.barplot(data=df_dynamic, x=col_x, y=col_y, palette="coolwarm", ax=ax4)
+        ax4.set_title(titulo_grafico, fontsize=16)
+        ax4.set_xlabel(col_x, fontsize=12)
+        ax4.set_ylabel(f"{agregacao} de {col_y}", fontsize=12)
+        st.pyplot(fig4)
+
+    except Exception as e:
+        st.error(f"Erro ao gerar Gráfico Dinâmico: {e}")
+
 
 # =_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=
 # PÁGINA 2: SIMULADOR DE PREDIÇÃO
 # =_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=
 elif pagina == "Simulador de Predição":
     st.title("Simulador para Predição de Tipo de Ataque")
-    st.info("Preencha os dados do incidente. Campos deixados em branco usarão o valor mediano/mais comum dos dados (a forma correta de tratar 'informação nula' para este modelo).")
+    st.info("Preencha os dados do incidente. Campos deixados em branco usarão o valor mais neutro (mediano/comum) para a predição.")
 
     if modelo is None:
         st.error(f"Erro: Arquivo do modelo ('{CAMINHO_MODELO.name}') não encontrado. "
@@ -143,24 +161,23 @@ elif pagina == "Simulador de Predição":
             col1, col2 = st.columns(2)
 
             with col1:
+                # *** ALTERAÇÃO 1: Placeholder removido ***
                 financial_loss = st.number_input(
                     "Prejuízo Financeiro (em Milhões $)", 
-                    min_value=0.0, max_value=100.0, value=None, 
-                    placeholder=f"Opcional (Padrão: {defaults['financial_loss']:.0f})"
+                    min_value=0.0, max_value=100.0, value=None
                 )
                 resolution_time = st.number_input(
                     "Tempo de Resolução (em Horas)", 
-                    min_value=1, max_value=72, value=None, 
-                    placeholder=f"Opcional (Padrão: {defaults['resolution_time']:.0f})"
+                    min_value=1, max_value=72, value=None
                 )
                 affected_users = st.number_input(
                     "Nº de Usuários Afetados", 
-                    min_value=0, max_value=1000000, value=None, 
-                    placeholder=f"Opcional (Padrão: {defaults['affected_users']:.0f})"
+                    min_value=0, max_value=1000000, value=None
                 )
             
             with col2:
-                op_nao_informar = "Não informar (Usar padrão)"
+                # *** ALTERAÇÃO 2: Texto do campo opcional alterado ***
+                op_nao_informar = "Não Especificar"
                 attack_source = st.selectbox(
                     "Fonte do Ataque (Código):", [op_nao_informar] + sorted(df_original['Attack Source'].unique())
                 )
@@ -198,8 +215,9 @@ elif pagina == "Simulador de Predição":
             }
             input_df = pd.DataFrame(input_data)
             
-            st.write("--- Valores Utilizados para Predição (após preencher campos vazios) ---")
-            st.dataframe(input_df)
+            # *** ALTERAÇÃO 3: Remoção do print dos valores intermediários ***
+            # st.write("--- Valores Utilizados para Predição (após preencher campos vazios) ---")
+            # st.dataframe(input_df)
             
             df_para_dummies = pd.concat([df_original.drop(columns=['Attack Type']), input_df], ignore_index=True)
             df_processado = pd.get_dummies(df_para_dummies, 
