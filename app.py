@@ -16,7 +16,7 @@ caminho_projeto = Path(".")
 caminho_pasta_csv = caminho_projeto / "CyberSec"
 caminho_db = caminho_pasta_csv / "CyberSec.db" 
 NOME_TABELA = 'CyberSec_data'
-CAMINHO_MODELO = caminho_projeto / 'modelo_classificador.pkl'
+CAMINHO_MODELO = caminho_pasta_csv / 'modelo_classificador.pkl'
 
 # ==============================================================================
 # FUNÇÕES DE CACHE
