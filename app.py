@@ -22,9 +22,8 @@ CAMINHO_MODELO = caminho_pasta_csv / 'modelo_classificador.pkl'
 caminho_pasta_csv.mkdir(exist_ok=True)
 
 # ==============================================================================
-# *** MUDANÇA 1: VERIFICAÇÃO INICIAL DE ARQUIVOS ***
+# VERIFICAÇÃO INICIAL DE ARQUIVOS
 # ==============================================================================
-# Verifica se os arquivos essenciais existem ANTES de carregar
 db_existe = caminho_db.exists()
 modelo_existe = CAMINHO_MODELO.exists()
 setup_necessario = not (db_existe and modelo_existe)
@@ -47,7 +46,6 @@ def carregar_modelo(caminho):
 @st.cache_data
 def carregar_dados_completos(db_path, query):
     if not db_existe:
-        st.error(f"Banco de dados '{db_path.name}' não encontrado. Faça o upload na página 'Atualizar Base'.")
         return pd.DataFrame() 
         
     print(f"Carregando dados do banco: {db_path}")
@@ -62,38 +60,35 @@ def carregar_dados_completos(db_path, query):
 modelo = carregar_modelo(CAMINHO_MODELO)
 df_original = carregar_dados_completos(caminho_db, f"SELECT * FROM {NOME_TABELA}")
 
-# Listas de colunas para os seletores do gráfico dinâmico
-colunas_categoricas_plot = [
-    'Attack Source', 'Attack Type', 'Country', 'Defense Mechanism Used', 
-    'Security Vulnerability Type', 'Target Industry', 'Year'
-]
-colunas_numericas_plot = [
-    'Financial Loss (in Million $)', 'Incident Resolution Time (in Hours)', 'Number of Affected Users'
-]
-colunas_categoricas_plot = [col for col in colunas_categoricas_plot if col in df_original.columns]
-colunas_numericas_plot = [col for col in colunas_numericas_plot if col in df_original.columns]
+# Listas de colunas (só as preenche se o df_original não estiver vazio)
+colunas_categoricas_plot = []
+colunas_numericas_plot = []
+if not df_original.empty:
+    colunas_categoricas_plot = [
+        'Attack Source', 'Attack Type', 'Country', 'Defense Mechanism Used', 
+        'Security Vulnerability Type', 'Target Industry', 'Year'
+    ]
+    colunas_numericas_plot = [
+        'Financial Loss (in Million $)', 'Incident Resolution Time (in Hours)', 'Number of Affected Users'
+    ]
+    colunas_categoricas_plot = [col for col in colunas_categoricas_plot if col in df_original.columns]
+    colunas_numericas_plot = [col for col in colunas_numericas_plot if col in df_original.columns]
 
 # ==============================================================================
 # INTERFACE DO USUÁRIO (Sidebar de Navegação)
 # ==============================================================================
 st.sidebar.title("Navegação")
-
-# *** MUDANÇA 2: LÓGICA DE PÁGINA PADRÃO ***
-# Define a ordem das páginas
 pagina_opcoes = ["Atualizar Base de Dados", "Análise Exploratória", "Simulador de Predição"]
-
-# Se os arquivos não existem, a página padrão (index) é 0 ("Atualizar Base")
-# Se existem, a página padrão é 1 ("Análise")
 default_index = 0 if setup_necessario else 1 
 
 if setup_necessario:
-    st.sidebar.warning("Configuração necessária. Por favor, carregue uma base de dados para habilitar a análise e predição.")
+    st.sidebar.warning("Configuração necessária. Carregue uma base de dados para começar.")
 
 pagina = st.sidebar.radio("Selecione uma página:", pagina_opcoes, index=default_index)
 
 
 # =_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=
-# PÁGINA 1: ATUALIZAR BASE DE DADOS (Agora é a primeira)
+# PÁGINA 1: ATUALIZAR BASE DE DADOS
 # =_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=
 if pagina == "Atualizar Base de Dados":
     st.title("Atualizar Base de Dados e Re-treinar Modelo")
@@ -136,7 +131,7 @@ if pagina == "Atualizar Base de Dados":
                         st.info("Limpando cache e recarregando a aplicação...")
                         st.cache_data.clear()
                         st.cache_resource.clear()
-                        st.rerun() # Recarrega a página
+                        st.rerun() 
 
             except Exception as e:
                 st.error(f"Um erro inesperado ocorreu: {e}")
@@ -152,10 +147,49 @@ elif pagina == "Análise Exploratória":
     if setup_necessario or df_original.empty or not colunas_categoricas_plot or not colunas_numericas_plot:
         st.warning("Nenhum dado ou modelo encontrado. Por favor, carregue uma base de dados na página 'Atualizar Base de Dados'.")
     else:
-        st.write("Visualizações sobre os dados de incidentes de segurança.")
+        
+        # ==============================================================================
+        # *** INÍCIO DA NOVA SEÇÃO DE MÉTRICAS ***
+        # ==============================================================================
+        
+        st.header("Resumo Geral da Base de Dados")
+
+        # --- Calcular métricas ---
+        total_linhas = df_original.shape[0]
+        total_tipos_ataque = df_original['Attack Type'].nunique()
+        total_paises = df_original['Country'].nunique()
+        total_prejuizo = df_original['Financial Loss (in Million $)'].sum()
+
+        # --- Exibir métricas em colunas ---
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("Total de Incidentes", f"{total_linhas:,}")
+        with col2:
+            st.metric("Tipos de Ataque Únicos", f"{total_tipos_ataque}")
+        with col3:
+            st.metric("Países de Origem Únicos", f"{total_paises}")
+        with col4:
+            st.metric("Prejuízo Total (Milhões $)", f"{total_prejuizo:,.2f}")
+        
+        st.divider() # Adiciona uma linha horizontal
+
+        # --- Tabela de Distribuição de Tipos de Ataque ---
+        st.subheader("Distribuição de Tipos de Ataque (Contagem e %)")
+        df_dist_ataque = df_original['Attack Type'].value_counts().reset_index()
+        df_dist_ataque.columns = ['Attack Type', 'Contagem']
+        df_dist_ataque['Percentual (%)'] = (df_dist_ataque['Contagem'] / total_linhas * 100).round(2)
+        st.dataframe(df_dist_ataque, use_container_width=True)
+        
+        st.divider() # Adiciona outra linha horizontal
+        
+        # ==============================================================================
+        # *** FIM DA NOVA SEÇÃO DE MÉTRICAS ***
+        # ==============================================================================
+        
+        st.header("Análises Gráficas Detalhadas")
 
         # --- Gráfico 1: Impacto Financeiro por Tipo de Ataque ---
-        st.header("Gráfico 1: Impacto Financeiro Total por Tipo de Ataque")
+        st.subheader("Impacto Financeiro Total por Tipo de Ataque") # Mudei de Header para Subheader
         try:
             df_loss = df_original.groupby("Attack Type")["Financial Loss (in Million $)"].sum().reset_index()
             fig1, ax1 = plt.subplots(figsize=(12, 6))
@@ -168,7 +202,7 @@ elif pagina == "Análise Exploratória":
             st.error(f"Erro ao gerar Gráfico 1: {e}")
 
         # --- Gráfico 2: Relação Usuários Afetados vs. Prejuízo ---
-        st.header("Gráfico 2: Relação entre Usuários Afetados e Prejuízo")
+        st.subheader("Relação entre Usuários Afetados e Prejuízo")
         try:
             fig2, ax2 = plt.subplots(figsize=(12, 6))
             sns.regplot(data=df_original, x="Number of Affected Users", y="Financial Loss (in Million $)", scatter_kws={'alpha':0.5}, line_kws={'color':'red'}, ax=ax2)
@@ -180,7 +214,7 @@ elif pagina == "Análise Exploratória":
             st.error(f"Erro ao gerar Gráfico 2: {e}")
 
         # --- Gráfico 3: Distribuição do Tempo de Resolução ---
-        st.header("Gráfico 3: Distribuição do Tempo de Resolução de Incidentes")
+        st.subheader("Distribuição do Tempo de Resolução de Incidentes")
         try:
             fig3, ax3 = plt.subplots(figsize=(12, 6))
             sns.histplot(df_original["Incident Resolution Time (in Hours)"], kde=True, bins=30, ax=ax3)
@@ -192,10 +226,10 @@ elif pagina == "Análise Exploratória":
             st.error(f"Erro ao gerar Gráfico 3: {e}")
 
         # --- GRÁFICO 4: GERADOR DE GRÁFICO DINÂMICO ---
-        st.header("Gráfico 4: Gerador de Gráfico Dinâmico")
+        st.subheader("Gerador de Gráfico Dinâmico")
         st.write("Crie seu próprio gráfico de colunas selecionando as variáveis.")
         
-        col_x = st.selectbox("Selecione a Categoria (Eixo X):", colunas_categoricas_plot, index=1)
+        col_x = st.selectbox("Selecione a Categoria (Eixo X):", colunas_categoricas_plot, index=1 if len(colunas_categoricas_plot) > 1 else 0)
         col_y = st.selectbox("Selecione o Valor (Eixo Y):", colunas_numericas_plot, index=0)
         agregacao = st.radio("Selecione a Agregação:", ("Soma", "Média"), horizontal=True)
 
@@ -213,6 +247,7 @@ elif pagina == "Análise Exploratória":
             ax4.set_xlabel(col_x, fontsize=12)
             ax4.set_ylabel(f"{agregacao} de {col_y}", fontsize=12)
             st.pyplot(fig4)
+
         except Exception as e:
             st.error(f"Erro ao gerar Gráfico Dinâmico: {e}")
 
