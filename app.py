@@ -5,6 +5,7 @@ from pathlib import Path
 import joblib 
 import matplotlib.pyplot as plt 
 import seaborn as sns           
+from backend_tasks import processar_nova_base, treinar_novo_modelo 
 
 # ==============================================================================
 # CONFIGURAÇÃO DA PÁGINA E CAMINHOS
@@ -13,16 +14,29 @@ st.set_page_config(layout="wide", page_title="Análise de CyberSecurity")
 
 # --- Definição de Caminhos ---
 caminho_projeto = Path(".") 
-caminho_pasta_csv = caminho_projeto / "CyberSec"
+caminho_pasta_csv = caminho_projeto / "CyberSec" 
 caminho_db = caminho_pasta_csv / "CyberSec.db" 
 NOME_TABELA = 'CyberSec_data'
 CAMINHO_MODELO = caminho_pasta_csv / 'modelo_classificador.pkl'
+
+caminho_pasta_csv.mkdir(exist_ok=True)
+
+# ==============================================================================
+# *** MUDANÇA 1: VERIFICAÇÃO INICIAL DE ARQUIVOS ***
+# ==============================================================================
+# Verifica se os arquivos essenciais existem ANTES de carregar
+db_existe = caminho_db.exists()
+modelo_existe = CAMINHO_MODELO.exists()
+setup_necessario = not (db_existe and modelo_existe)
 
 # ==============================================================================
 # FUNÇÕES DE CACHE
 # ==============================================================================
 @st.cache_resource
 def carregar_modelo(caminho):
+    if not modelo_existe:
+        print("Arquivo de modelo não encontrado. Pulando o carregamento.")
+        return None
     print(f"Carregando modelo de: {caminho}")
     try:
         modelo = joblib.load(caminho)
@@ -32,6 +46,10 @@ def carregar_modelo(caminho):
 
 @st.cache_data
 def carregar_dados_completos(db_path, query):
+    if not db_existe:
+        st.error(f"Banco de dados '{db_path.name}' não encontrado. Faça o upload na página 'Atualizar Base'.")
+        return pd.DataFrame() 
+        
     print(f"Carregando dados do banco: {db_path}")
     conn = sqlite3.connect(db_path)
     df = pd.read_sql_query(query, conn)
@@ -52,96 +70,165 @@ colunas_categoricas_plot = [
 colunas_numericas_plot = [
     'Financial Loss (in Million $)', 'Incident Resolution Time (in Hours)', 'Number of Affected Users'
 ]
+colunas_categoricas_plot = [col for col in colunas_categoricas_plot if col in df_original.columns]
+colunas_numericas_plot = [col for col in colunas_numericas_plot if col in df_original.columns]
 
 # ==============================================================================
 # INTERFACE DO USUÁRIO (Sidebar de Navegação)
 # ==============================================================================
 st.sidebar.title("Navegação")
-pagina = st.sidebar.radio("Selecione uma página:", ["Análise Exploratória", "Simulador de Predição"])
+
+# *** MUDANÇA 2: LÓGICA DE PÁGINA PADRÃO ***
+# Define a ordem das páginas
+pagina_opcoes = ["Atualizar Base de Dados", "Análise Exploratória", "Simulador de Predição"]
+
+# Se os arquivos não existem, a página padrão (index) é 0 ("Atualizar Base")
+# Se existem, a página padrão é 1 ("Análise")
+default_index = 0 if setup_necessario else 1 
+
+if setup_necessario:
+    st.sidebar.warning("Configuração necessária. Por favor, carregue uma base de dados para habilitar a análise e predição.")
+
+pagina = st.sidebar.radio("Selecione uma página:", pagina_opcoes, index=default_index)
+
 
 # =_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=
-# PÁGINA 1: ANÁLISE EXPLORATÓRIA
+# PÁGINA 1: ATUALIZAR BASE DE DADOS (Agora é a primeira)
 # =_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=
-if pagina == "Análise Exploratória":
-    st.title("Painel de Análise Exploratória de Incidentes")
-    st.write("Visualizações sobre os dados de incidentes de segurança.")
-
-    # --- Gráfico 1: Impacto Financeiro por Tipo de Ataque ---
-    st.header("Gráfico 1: Impacto Financeiro Total por Tipo de Ataque")
-    try:
-        df_loss = df_original.groupby("Attack Type")["Financial Loss (in Million $)"].sum().reset_index()
-        fig1, ax1 = plt.subplots(figsize=(12, 6))
-        sns.barplot(data=df_loss, x="Attack Type", y="Financial Loss (in Million $)", palette="viridis", ax=ax1)
-        ax1.set_title('Impacto Financeiro Total por Tipo de Ataque', fontsize=16)
-        ax1.set_xlabel('Tipo de Ataque (Código)', fontsize=12)
-        ax1.set_ylabel('Prejuízo Total (em Milhões de $)', fontsize=12)
-        st.pyplot(fig1)
-    except Exception as e:
-        st.error(f"Erro ao gerar Gráfico 1: {e}")
-
-    # --- Gráfico 2: Relação Usuários Afetados vs. Prejuízo ---
-    st.header("Gráfico 2: Relação entre Usuários Afetados e Prejuízo")
-    try:
-        fig2, ax2 = plt.subplots(figsize=(12, 6))
-        sns.regplot(data=df_original, x="Number of Affected Users", y="Financial Loss (in Million $)", scatter_kws={'alpha':0.5}, line_kws={'color':'red'}, ax=ax2)
-        ax2.set_title('Relação entre Usuários Afetados e Prejuízo Financeiro', fontsize=16)
-        ax2.set_xlabel('Número de Usuários Afetados', fontsize=12)
-        ax2.set_ylabel('Prejuízo (em Milhões de $)', fontsize=12)
-        st.pyplot(fig2)
-    except Exception as e:
-        st.error(f"Erro ao gerar Gráfico 2: {e}")
-
-    # --- Gráfico 3: Distribuição do Tempo de Resolução ---
-    st.header("Gráfico 3: Distribuição do Tempo de Resolução de Incidentes")
-    try:
-        fig3, ax3 = plt.subplots(figsize=(12, 6))
-        sns.histplot(df_original["Incident Resolution Time (in Hours)"], kde=True, bins=30, ax=ax3)
-        ax3.set_title('Distribuição do Tempo de Resolução de Incidentes', fontsize=16)
-        ax3.set_xlabel('Tempo de Resolução (em Horas)', fontsize=12)
-        ax3.set_ylabel('Frequência (Nº de Incidentes)', fontsize=12)
-        st.pyplot(fig3)
-    except Exception as e:
-        st.error(f"Erro ao gerar Gráfico 3: {e}")
-
-    # --- GRÁFICO 4: GERADOR DE GRÁFICO DINÂMICO (NOVO) ---
-    st.header("Gráfico 4: Gerador de Gráfico Dinâmico")
-    st.write("Crie seu próprio gráfico de colunas selecionando as variáveis.")
+if pagina == "Atualizar Base de Dados":
+    st.title("Atualizar Base de Dados e Re-treinar Modelo")
     
-    col_x = st.selectbox("Selecione a Categoria (Eixo X):", colunas_categoricas_plot, index=1)
-    col_y = st.selectbox("Selecione o Valor (Eixo Y):", colunas_numericas_plot, index=0)
-    agregacao = st.radio("Selecione a Agregação:", ("Soma", "Média"), horizontal=True)
+    st.warning("Atenção: Este processo irá substituir a base de dados e o modelo de ML existentes.")
+    
+    uploaded_file = st.file_uploader(
+        "Selecione um arquivo .zip ou .csv",
+        type=['zip', 'csv'],
+        accept_multiple_files=False
+    )
+    
+    if st.button("Processar e Treinar Nova Base"):
+        if uploaded_file is not None:
+            try:
+                # --- Etapa 1: Processar a Base ---
+                with st.spinner("Etapa 1/2: Processando nova base de dados... Isso pode levar vários minutos."):
+                    sucesso_db, msg_db = processar_nova_base(
+                        uploaded_file=uploaded_file,
+                        db_path=caminho_db,
+                        table_name=NOME_TABELA
+                    )
+                if not sucesso_db:
+                    st.error(f"Falha ao processar a base: {msg_db}")
+                else:
+                    st.success(f"Etapa 1/2: {msg_db}")
+                    
+                    # --- Etapa 2: Treinar o Modelo ---
+                    with st.spinner("Etapa 2/2: Treinando novo modelo de Machine Learning..."):
+                        sucesso_ml, msg_ml = treinar_novo_modelo(
+                            db_path=caminho_db,
+                            table_name=NOME_TABELA,
+                            model_save_path=CAMINHO_MODELO
+                        )
+                    if not sucesso_ml:
+                        st.error(f"Falha ao treinar o modelo: {msg_ml}")
+                    else:
+                        st.success(f"Etapa 2/2: {msg_ml}")
+                        
+                        st.info("Limpando cache e recarregando a aplicação...")
+                        st.cache_data.clear()
+                        st.cache_resource.clear()
+                        st.rerun() # Recarrega a página
 
-    try:
-        if agregacao == "Soma":
-            df_dynamic = df_original.groupby(col_x)[col_y].sum().reset_index()
-            titulo_grafico = f'Soma de "{col_y}" por "{col_x}"'
+            except Exception as e:
+                st.error(f"Um erro inesperado ocorreu: {e}")
         else:
-            df_dynamic = df_original.groupby(col_x)[col_y].mean().reset_index()
-            titulo_grafico = f'Média de "{col_y}" por "{col_x}"'
-        
-        # Cria o gráfico
-        fig4, ax4 = plt.subplots(figsize=(12, 6))
-        sns.barplot(data=df_dynamic, x=col_x, y=col_y, palette="coolwarm", ax=ax4)
-        ax4.set_title(titulo_grafico, fontsize=16)
-        ax4.set_xlabel(col_x, fontsize=12)
-        ax4.set_ylabel(f"{agregacao} de {col_y}", fontsize=12)
-        st.pyplot(fig4)
+            st.error("Por favor, selecione um arquivo para enviar.")
 
-    except Exception as e:
-        st.error(f"Erro ao gerar Gráfico Dinâmico: {e}")
+# =_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=
+# PÁGINA 2: ANÁLISE EXPLORATÓRIA
+# =_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=
+elif pagina == "Análise Exploratória":
+    st.title("Painel de Análise Exploratória de Incidentes")
+    
+    if setup_necessario or df_original.empty or not colunas_categoricas_plot or not colunas_numericas_plot:
+        st.warning("Nenhum dado ou modelo encontrado. Por favor, carregue uma base de dados na página 'Atualizar Base de Dados'.")
+    else:
+        st.write("Visualizações sobre os dados de incidentes de segurança.")
+
+        # --- Gráfico 1: Impacto Financeiro por Tipo de Ataque ---
+        st.header("Gráfico 1: Impacto Financeiro Total por Tipo de Ataque")
+        try:
+            df_loss = df_original.groupby("Attack Type")["Financial Loss (in Million $)"].sum().reset_index()
+            fig1, ax1 = plt.subplots(figsize=(12, 6))
+            sns.barplot(data=df_loss, x="Attack Type", y="Financial Loss (in Million $)", palette="viridis", ax=ax1)
+            ax1.set_title('Impacto Financeiro Total por Tipo de Ataque', fontsize=16)
+            ax1.set_xlabel('Tipo de Ataque (Código)', fontsize=12)
+            ax1.set_ylabel('Prejuízo Total (em Milhões de $)', fontsize=12)
+            st.pyplot(fig1)
+        except Exception as e:
+            st.error(f"Erro ao gerar Gráfico 1: {e}")
+
+        # --- Gráfico 2: Relação Usuários Afetados vs. Prejuízo ---
+        st.header("Gráfico 2: Relação entre Usuários Afetados e Prejuízo")
+        try:
+            fig2, ax2 = plt.subplots(figsize=(12, 6))
+            sns.regplot(data=df_original, x="Number of Affected Users", y="Financial Loss (in Million $)", scatter_kws={'alpha':0.5}, line_kws={'color':'red'}, ax=ax2)
+            ax2.set_title('Relação entre Usuários Afetados e Prejuízo Financeiro', fontsize=16)
+            ax2.set_xlabel('Número de Usuários Afetados', fontsize=12)
+            ax2.set_ylabel('Prejuízo (em Milhões de $)', fontsize=12)
+            st.pyplot(fig2)
+        except Exception as e:
+            st.error(f"Erro ao gerar Gráfico 2: {e}")
+
+        # --- Gráfico 3: Distribuição do Tempo de Resolução ---
+        st.header("Gráfico 3: Distribuição do Tempo de Resolução de Incidentes")
+        try:
+            fig3, ax3 = plt.subplots(figsize=(12, 6))
+            sns.histplot(df_original["Incident Resolution Time (in Hours)"], kde=True, bins=30, ax=ax3)
+            ax3.set_title('Distribuição do Tempo de Resolução de Incidentes', fontsize=16)
+            ax3.set_xlabel('Tempo de Resolução (em Horas)', fontsize=12)
+            ax3.set_ylabel('Frequência (Nº de Incidentes)', fontsize=12)
+            st.pyplot(fig3)
+        except Exception as e:
+            st.error(f"Erro ao gerar Gráfico 3: {e}")
+
+        # --- GRÁFICO 4: GERADOR DE GRÁFICO DINÂMICO ---
+        st.header("Gráfico 4: Gerador de Gráfico Dinâmico")
+        st.write("Crie seu próprio gráfico de colunas selecionando as variáveis.")
+        
+        col_x = st.selectbox("Selecione a Categoria (Eixo X):", colunas_categoricas_plot, index=1)
+        col_y = st.selectbox("Selecione o Valor (Eixo Y):", colunas_numericas_plot, index=0)
+        agregacao = st.radio("Selecione a Agregação:", ("Soma", "Média"), horizontal=True)
+
+        try:
+            if agregacao == "Soma":
+                df_dynamic = df_original.groupby(col_x)[col_y].sum().reset_index()
+                titulo_grafico = f'Soma de "{col_y}" por "{col_x}"'
+            else:
+                df_dynamic = df_original.groupby(col_x)[col_y].mean().reset_index()
+                titulo_grafico = f'Média de "{col_y}" por "{col_x}"'
+            
+            fig4, ax4 = plt.subplots(figsize=(12, 6))
+            sns.barplot(data=df_dynamic, x=col_x, y=col_y, palette="coolwarm", ax=ax4)
+            ax4.set_title(titulo_grafico, fontsize=16)
+            ax4.set_xlabel(col_x, fontsize=12)
+            ax4.set_ylabel(f"{agregacao} de {col_y}", fontsize=12)
+            st.pyplot(fig4)
+        except Exception as e:
+            st.error(f"Erro ao gerar Gráfico Dinâmico: {e}")
 
 
 # =_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=
-# PÁGINA 2: SIMULADOR DE PREDIÇÃO
+# PÁGINA 3: SIMULADOR DE PREDIÇÃO
 # =_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=
 elif pagina == "Simulador de Predição":
     st.title("Simulador para Predição de Tipo de Ataque")
-    st.info("Preencha os dados do incidente. Campos deixados em branco usarão o valor mais neutro (mediano/comum) para a predição.")
-
-    if modelo is None:
-        st.error(f"Erro: Arquivo do modelo ('{CAMINHO_MODELO.name}') não encontrado. "
-                 "Execute o script '02_treinar_modelo.py' primeiro.")
+    
+    if setup_necessario or modelo is None or df_original.empty:
+        st.error("Modelo ou banco de dados não encontrado. "
+                 "Por favor, carregue e processe uma nova base na página 'Atualizar Base de Dados' primeiro.")
     else:
+        st.info("Preencha os dados do incidente. Campos deixados em branco usarão o valor mais neutro (mediano/comum) para a predição.")
+        
         # --- Cálculo dos Valores Padrão (Median/Mode) ---
         defaults = {
             'financial_loss': df_original["Financial Loss (in Million $)"].median(),
@@ -161,7 +248,6 @@ elif pagina == "Simulador de Predição":
             col1, col2 = st.columns(2)
 
             with col1:
-                # *** ALTERAÇÃO 1: Placeholder removido ***
                 financial_loss = st.number_input(
                     "Prejuízo Financeiro (em Milhões $)", 
                     min_value=0.0, max_value=100.0, value=None
@@ -176,7 +262,6 @@ elif pagina == "Simulador de Predição":
                 )
             
             with col2:
-                # *** ALTERAÇÃO 2: Texto do campo opcional alterado ***
                 op_nao_informar = "Não Especificar"
                 attack_source = st.selectbox(
                     "Fonte do Ataque (Código):", [op_nao_informar] + sorted(df_original['Attack Source'].unique())
@@ -214,10 +299,6 @@ elif pagina == "Simulador de Predição":
                 'Year': [defaults['year'] if year == op_nao_informar else year]
             }
             input_df = pd.DataFrame(input_data)
-            
-            # *** ALTERAÇÃO 3: Remoção do print dos valores intermediários ***
-            # st.write("--- Valores Utilizados para Predição (após preencher campos vazios) ---")
-            # st.dataframe(input_df)
             
             df_para_dummies = pd.concat([df_original.drop(columns=['Attack Type']), input_df], ignore_index=True)
             df_processado = pd.get_dummies(df_para_dummies, 
