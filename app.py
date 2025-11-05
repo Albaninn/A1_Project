@@ -17,7 +17,7 @@ caminho_projeto = Path(".")
 caminho_pasta_csv = caminho_projeto / "CyberSec" 
 caminho_db = caminho_pasta_csv / "CyberSec.db" 
 NOME_TABELA = 'CyberSec_data'
-CAMINHO_MODELO = caminho_pasta_csv / 'modelo_classificador.pkl'
+CAMINHO_MODELO = caminho_pasta_csv / 'modelo_classificador.pkl' 
 
 caminho_pasta_csv.mkdir(exist_ok=True)
 
@@ -33,6 +33,10 @@ setup_necessario = not (db_existe and modelo_existe)
 # ==============================================================================
 @st.cache_resource
 def carregar_modelo(caminho):
+    """
+    Carrega o modelo de ML do arquivo .pkl.
+    Usa cache de 'recurso' para carregar apenas uma vez por sessão.
+    """
     if not modelo_existe:
         print("Arquivo de modelo não encontrado. Pulando o carregamento.")
         return None
@@ -45,6 +49,10 @@ def carregar_modelo(caminho):
 
 @st.cache_data
 def carregar_dados_completos(db_path, query):
+    """
+    Carrega os dados do banco de dados.
+    Usa cache de 'dados' para recarregar apenas se o db_path ou a query mudarem.
+    """
     if not db_existe:
         return pd.DataFrame() 
         
@@ -121,7 +129,7 @@ if pagina == "Atualizar Base de Dados":
                         sucesso_ml, msg_ml = treinar_novo_modelo(
                             db_path=caminho_db,
                             table_name=NOME_TABELA,
-                            model_save_path=CAMINHO_MODELO
+                            model_save_path=CAMINHO_MODELO 
                         )
                     if not sucesso_ml:
                         st.error(f"Falha ao treinar o modelo: {msg_ml}")
@@ -149,47 +157,72 @@ elif pagina == "Análise Exploratória":
     else:
         
         # ==============================================================================
-        # *** INÍCIO DA NOVA SEÇÃO DE MÉTRICAS ***
+        # *** INÍCIO DA SEÇÃO DE MÉTRICAS ATUALIZADA ***
         # ==============================================================================
         
         st.header("Resumo Geral da Base de Dados")
 
         # --- Calcular métricas ---
         total_linhas = df_original.shape[0]
-        total_tipos_ataque = df_original['Attack Type'].nunique()
-        total_paises = df_original['Country'].nunique()
         total_prejuizo = df_original['Financial Loss (in Million $)'].sum()
+
+        # --- Métricas com Tooltip (Hover) ---
+        tipos_ataque_unicos = sorted(df_original['Attack Type'].unique())
+        paises_unicos = sorted(df_original['Country'].unique())
+        
+        tooltip_ataques = f"Códigos encontrados: {', '.join(map(str, tipos_ataque_unicos))}"
+        tooltip_paises = f"Códigos encontrados: {', '.join(map(str, paises_unicos))}"
 
         # --- Exibir métricas em colunas ---
         col1, col2, col3, col4 = st.columns(4)
         with col1:
             st.metric("Total de Incidentes", f"{total_linhas:,}")
         with col2:
-            st.metric("Tipos de Ataque Únicos", f"{total_tipos_ataque}")
+            st.metric("Tipos de Ataque Únicos", f"{len(tipos_ataque_unicos)}", help=tooltip_ataques)
         with col3:
-            st.metric("Países de Origem Únicos", f"{total_paises}")
+            st.metric("Países de Origem Únicos", f"{len(paises_unicos)}", help=tooltip_paises)
         with col4:
             st.metric("Prejuízo Total (Milhões $)", f"{total_prejuizo:,.2f}")
         
-        st.divider() # Adiciona uma linha horizontal
+        st.divider() 
 
-        # --- Tabela de Distribuição de Tipos de Ataque ---
-        st.subheader("Distribuição de Tipos de Ataque (Contagem e %)")
-        df_dist_ataque = df_original['Attack Type'].value_counts().reset_index()
-        df_dist_ataque.columns = ['Attack Type', 'Contagem']
-        df_dist_ataque['Percentual (%)'] = (df_dist_ataque['Contagem'] / total_linhas * 100).round(2)
-        st.dataframe(df_dist_ataque, use_container_width=True)
+        # --- Tabelas de Distribuição ---
+        st.subheader("Distribuição das Principais Categorias (Contagem e %)")
+
+        # Separa a área de tabelas em 3 colunas
+        col_t1, col_t2, col_t3 = st.columns(3)
+
+        with col_t1:
+            st.write("Por Tipo de Ataque:")
+            df_dist_ataque = df_original['Attack Type'].value_counts().reset_index()
+            df_dist_ataque.columns = ['Attack Type', 'Contagem']
+            df_dist_ataque['Percentual (%)'] = (df_dist_ataque['Contagem'] / total_linhas * 100).round(2)
+            st.dataframe(df_dist_ataque, use_container_width=True)
         
-        st.divider() # Adiciona outra linha horizontal
+        with col_t2:
+            st.write("Por Indústria Alvo:")
+            df_dist_industry = df_original['Target Industry'].value_counts().reset_index()
+            df_dist_industry.columns = ['Target Industry', 'Contagem']
+            df_dist_industry['Percentual (%)'] = (df_dist_industry['Contagem'] / total_linhas * 100).round(2)
+            st.dataframe(df_dist_industry, use_container_width=True)
+
+        with col_t3:
+            st.write("Por País de Origem:")
+            df_dist_country = df_original['Country'].value_counts().reset_index()
+            df_dist_country.columns = ['Country', 'Contagem']
+            df_dist_country['Percentual (%)'] = (df_dist_country['Contagem'] / total_linhas * 100).round(2)
+            st.dataframe(df_dist_country, use_container_width=True)
+
+        st.divider() 
         
         # ==============================================================================
-        # *** FIM DA NOVA SEÇÃO DE MÉTRICAS ***
+        # *** FIM DA SEÇÃO DE MÉTRICAS ATUALIZADA ***
         # ==============================================================================
         
         st.header("Análises Gráficas Detalhadas")
 
         # --- Gráfico 1: Impacto Financeiro por Tipo de Ataque ---
-        st.subheader("Impacto Financeiro Total por Tipo de Ataque") # Mudei de Header para Subheader
+        st.subheader("Impacto Financeiro Total por Tipo de Ataque") 
         try:
             df_loss = df_original.groupby("Attack Type")["Financial Loss (in Million $)"].sum().reset_index()
             fig1, ax1 = plt.subplots(figsize=(12, 6))
