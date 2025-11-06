@@ -5,6 +5,7 @@ from pathlib import Path
 import joblib 
 import matplotlib.pyplot as plt 
 import seaborn as sns           
+import plotly.express as px # <--- NOVA IMPORTAÇÃO PARA O MAPA
 from backend_tasks import processar_nova_base, treinar_novo_modelo 
 
 # ==============================================================================
@@ -33,10 +34,6 @@ setup_necessario = not (db_existe and modelo_existe)
 # ==============================================================================
 @st.cache_resource
 def carregar_modelo(caminho):
-    """
-    Carrega o modelo de ML do arquivo .pkl.
-    Usa cache de 'recurso' para carregar apenas uma vez por sessão.
-    """
     if not modelo_existe:
         print("Arquivo de modelo não encontrado. Pulando o carregamento.")
         return None
@@ -49,10 +46,6 @@ def carregar_modelo(caminho):
 
 @st.cache_data
 def carregar_dados_completos(db_path, query):
-    """
-    Carrega os dados do banco de dados.
-    Usa cache de 'dados' para recarregar apenas se o db_path ou a query mudarem.
-    """
     if not db_existe:
         return pd.DataFrame() 
         
@@ -157,23 +150,19 @@ elif pagina == "Análise Exploratória":
     else:
         
         # ==============================================================================
-        # *** INÍCIO DA SEÇÃO DE MÉTRICAS ATUALIZADA ***
+        # SEÇÃO DE MÉTRICAS
         # ==============================================================================
         
         st.header("Resumo Geral da Base de Dados")
 
-        # --- Calcular métricas ---
         total_linhas = df_original.shape[0]
         total_prejuizo = df_original['Financial Loss (in Million $)'].sum()
-
-        # --- Métricas com Tooltip (Hover) ---
         tipos_ataque_unicos = sorted(df_original['Attack Type'].unique())
         paises_unicos = sorted(df_original['Country'].unique())
         
         tooltip_ataques = f"Códigos encontrados: {', '.join(map(str, tipos_ataque_unicos))}"
         tooltip_paises = f"Códigos encontrados: {', '.join(map(str, paises_unicos))}"
 
-        # --- Exibir métricas em colunas ---
         col1, col2, col3, col4 = st.columns(4)
         with col1:
             st.metric("Total de Incidentes", f"{total_linhas:,}")
@@ -186,17 +175,72 @@ elif pagina == "Análise Exploratória":
         
         st.divider() 
 
-        # --- Tabelas de Distribuição ---
-        st.subheader("Distribuição das Principais Categorias (Contagem e %)")
+        # ==============================================================================
+        # GRÁFICO DE MAPA (COROPLÉTICO) - GRANDE MUDANÇA
+        # ==============================================================================
+        st.subheader("Mapa de Frequência de Incidentes por País")
+        
+        # --- Dicionário de Mapeamento: Código da Base -> Código ISO 3 ---
+        MAPA_ISO = {
+            'USA': 'USA', 'China': 'CHN', 'Russia': 'RUS', 'Brazil': 'BRA',
+            'Germany': 'DEU', 'UK': 'GBR', 'India': 'IND', 'Australia': 'AUS',
+            'Japan': 'JPN', 'France': 'FRA', 'Canada': 'CAN'
+            # Adicione mais mapeamentos se descobrir novos códigos
+        }
+        
+        st.info("Nota: Este mapa traduz os códigos de país do seu dataset (ex: 'UK') para códigos ISO padrão (ex: 'GBR') para colorir o mapa-múndi.")
 
-        # Separa a área de tabelas em 3 colunas
-        col_t1, col_t2, col_t3 = st.columns(3)
+        try:
+            # 1. Contar a frequência de cada país
+            contagem_paises = df_original['Country'].value_counts().reset_index()
+            contagem_paises.columns = ['Country_Code', 'Contagem']
+            
+            # 2. Traduzir os códigos do seu DB para códigos ISO
+            contagem_paises['ISO_Code'] = contagem_paises['Country_Code'].map(MAPA_ISO)
+            
+            # 3. Filtrar apenas os países que conseguimos traduzir
+            df_mapa = contagem_paises.dropna(subset=['ISO_Code'])
+
+            if df_mapa.empty:
+                st.warning("Não foi possível gerar o mapa. Nenhum dos códigos de país no seu dataset (ex: 'USA', 'China') "
+                           "foi encontrado no `MAPA_ISO` dentro do `app.py`.")
+            else:
+                # 4. Criar o gráfico coroplético com Plotly
+                fig_mapa = px.choropleth(
+                    df_mapa,
+                    locations="ISO_Code",           # Coluna com os códigos ISO 3
+                    color="Contagem",             # Coluna que define a cor
+                    hover_name="Country_Code",    # O que aparece ao passar o mouse
+                    color_continuous_scale=px.colors.sequential.YlOrRd, # Esquema de cores
+                    title="Países por Frequência de Incidentes"
+                )
+                
+                # Atualiza o layout para usar o tema escuro do Streamlit
+                fig_mapa.update_layout(
+                    geo=dict(bgcolor='rgba(0,0,0,0)'),
+                    template='plotly_dark'
+                )
+                
+                # 5. Exibir o gráfico no Streamlit
+                st.plotly_chart(fig_mapa, use_container_width=True)
+
+        except Exception as e:
+            st.error(f"Erro ao gerar o Gráfico de Mapa: {e}")
+            
+        st.divider()
+
+        # ==============================================================================
+        # SEÇÃO DE TABELAS DE FREQUÊNCIA
+        # ==============================================================================
+        st.subheader("Distribuição das Principais Categorias (Contagem e %)")
+        col_t1, col_t2 = st.columns(2) # Ajustado para 2 colunas, já que o mapa mostra os países
 
         with col_t1:
             st.write("Por Tipo de Ataque:")
             df_dist_ataque = df_original['Attack Type'].value_counts().reset_index()
             df_dist_ataque.columns = ['Attack Type', 'Contagem']
             df_dist_ataque['Percentual (%)'] = (df_dist_ataque['Contagem'] / total_linhas * 100).round(2)
+            df_dist_ataque.index = pd.RangeIndex(start=1, stop=len(df_dist_ataque) + 1, step=1)
             st.dataframe(df_dist_ataque, use_container_width=True)
         
         with col_t2:
@@ -204,19 +248,13 @@ elif pagina == "Análise Exploratória":
             df_dist_industry = df_original['Target Industry'].value_counts().reset_index()
             df_dist_industry.columns = ['Target Industry', 'Contagem']
             df_dist_industry['Percentual (%)'] = (df_dist_industry['Contagem'] / total_linhas * 100).round(2)
+            df_dist_industry.index = pd.RangeIndex(start=1, stop=len(df_dist_industry) + 1, step=1)
             st.dataframe(df_dist_industry, use_container_width=True)
-
-        with col_t3:
-            st.write("Por País de Origem:")
-            df_dist_country = df_original['Country'].value_counts().reset_index()
-            df_dist_country.columns = ['Country', 'Contagem']
-            df_dist_country['Percentual (%)'] = (df_dist_country['Contagem'] / total_linhas * 100).round(2)
-            st.dataframe(df_dist_country, use_container_width=True)
 
         st.divider() 
         
         # ==============================================================================
-        # *** FIM DA SEÇÃO DE MÉTRICAS ATUALIZADA ***
+        # SEÇÃO DE GRÁFICOS DETALHADOS
         # ==============================================================================
         
         st.header("Análises Gráficas Detalhadas")
@@ -331,6 +369,7 @@ elif pagina == "Simulador de Predição":
             
             with col2:
                 op_nao_informar = "Não Especificar"
+                # Garante que as opções do selectbox sejam únicas
                 attack_source = st.selectbox(
                     "Fonte do Ataque (Código):", [op_nao_informar] + sorted(df_original['Attack Source'].unique())
                 )
@@ -368,6 +407,7 @@ elif pagina == "Simulador de Predição":
             }
             input_df = pd.DataFrame(input_data)
             
+            # Prepara os dados para o One-Hot Encoding
             df_para_dummies = pd.concat([df_original.drop(columns=['Attack Type']), input_df], ignore_index=True)
             df_processado = pd.get_dummies(df_para_dummies, 
                                            columns=[
@@ -377,6 +417,7 @@ elif pagina == "Simulador de Predição":
                                            drop_first=True, 
                                            dtype=int)
             
+            # Pega apenas a última linha (input do usuário)
             input_final = df_processado.iloc[-1:]
             
             try:
@@ -388,7 +429,8 @@ elif pagina == "Simulador de Predição":
                 
                 st.write("Probabilidades para cada tipo de ataque:")
                 df_proba = pd.DataFrame(predicao_proba, columns=modelo.classes_)
-                st.dataframe(df_proba.transpose().rename(columns={0: 'Probabilidade (%)'}).mul(100).round(2))
+                df_proba.index = pd.RangeIndex(start=1, stop=len(df_proba) + 1, step=1)
+                st.dataframe(df_proba.transpose().rename(columns={1: 'Probabilidade (%)'}).mul(100).round(2))
 
             except Exception as e:
                 st.error(f"Erro ao fazer a predição: {e}")
