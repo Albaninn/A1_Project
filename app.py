@@ -3,9 +3,9 @@ import pandas as pd
 import sqlite3
 from pathlib import Path
 import joblib 
-import matplotlib.pyplot as plt 
-import seaborn as sns           
-import plotly.express as px # <--- NOVA IMPORTAÇÃO PARA O MAPA
+# import matplotlib.pyplot as plt
+# import seaborn as sns
+import plotly.express as px # <--- Graficos
 from backend_tasks import processar_nova_base, treinar_novo_modelo 
 
 # ==============================================================================
@@ -152,7 +152,6 @@ elif pagina == "Análise Exploratória":
         # ==============================================================================
         # SEÇÃO DE MÉTRICAS
         # ==============================================================================
-        
         st.header("Resumo Geral da Base de Dados")
 
         total_linhas = df_original.shape[0]
@@ -172,68 +171,50 @@ elif pagina == "Análise Exploratória":
             st.metric("Países de Origem Únicos", f"{len(paises_unicos)}", help=tooltip_paises)
         with col4:
             st.metric("Prejuízo Total (Milhões $)", f"{total_prejuizo:,.2f}")
-        
         st.divider() 
 
         # ==============================================================================
-        # GRÁFICO DE MAPA (COROPLÉTICO) - GRANDE MUDANÇA
+        # GRÁFICO DE MAPA (Coroplético com Plotly)
         # ==============================================================================
         st.subheader("Mapa de Frequência de Incidentes por País")
         
-        # --- Dicionário de Mapeamento: Código da Base -> Código ISO 3 ---
         MAPA_ISO = {
             'USA': 'USA', 'China': 'CHN', 'Russia': 'RUS', 'Brazil': 'BRA',
             'Germany': 'DEU', 'UK': 'GBR', 'India': 'IND', 'Australia': 'AUS',
             'Japan': 'JPN', 'France': 'FRA', 'Canada': 'CAN'
-            # Adicione mais mapeamentos se descobrir novos códigos
         }
         
         st.info("Nota: Este mapa traduz os códigos de país do seu dataset (ex: 'UK') para códigos ISO padrão (ex: 'GBR') para colorir o mapa-múndi.")
 
         try:
-            # 1. Contar a frequência de cada país
             contagem_paises = df_original['Country'].value_counts().reset_index()
             contagem_paises.columns = ['Country_Code', 'Contagem']
-            
-            # 2. Traduzir os códigos do seu DB para códigos ISO
             contagem_paises['ISO_Code'] = contagem_paises['Country_Code'].map(MAPA_ISO)
-            
-            # 3. Filtrar apenas os países que conseguimos traduzir
             df_mapa = contagem_paises.dropna(subset=['ISO_Code'])
 
             if df_mapa.empty:
                 st.warning("Não foi possível gerar o mapa. Nenhum dos códigos de país no seu dataset (ex: 'USA', 'China') "
                            "foi encontrado no `MAPA_ISO` dentro do `app.py`.")
             else:
-                # 4. Criar o gráfico coroplético com Plotly
                 fig_mapa = px.choropleth(
                     df_mapa,
-                    locations="ISO_Code",           # Coluna com os códigos ISO 3
-                    color="Contagem",             # Coluna que define a cor
-                    hover_name="Country_Code",    # O que aparece ao passar o mouse
-                    color_continuous_scale=px.colors.sequential.YlOrRd, # Esquema de cores
+                    locations="ISO_Code",
+                    color="Contagem",
+                    hover_name="Country_Code",
+                    color_continuous_scale=px.colors.sequential.YlOrRd,
                     title="Países por Frequência de Incidentes"
                 )
-                
-                # Atualiza o layout para usar o tema escuro do Streamlit
-                fig_mapa.update_layout(
-                    geo=dict(bgcolor='rgba(0,0,0,0)'),
-                    template='plotly_dark'
-                )
-                
-                # 5. Exibir o gráfico no Streamlit
+                fig_mapa.update_layout(geo=dict(bgcolor='rgba(0,0,0,0)'), template='plotly_dark')
                 st.plotly_chart(fig_mapa, use_container_width=True)
-
         except Exception as e:
             st.error(f"Erro ao gerar o Gráfico de Mapa: {e}")
-            
         st.divider()
 
         # ==============================================================================
         # SEÇÃO DE TABELAS DE FREQUÊNCIA
         # ==============================================================================
         st.subheader("Distribuição das Principais Categorias (Contagem e %)")
-        col_t1, col_t2 = st.columns(2) # Ajustado para 2 colunas, já que o mapa mostra os países
+        col_t1, col_t2 = st.columns(2) 
 
         with col_t1:
             st.write("Por Tipo de Ataque:")
@@ -250,49 +231,60 @@ elif pagina == "Análise Exploratória":
             df_dist_industry['Percentual (%)'] = (df_dist_industry['Contagem'] / total_linhas * 100).round(2)
             df_dist_industry.index = pd.RangeIndex(start=1, stop=len(df_dist_industry) + 1, step=1)
             st.dataframe(df_dist_industry, use_container_width=True)
-
         st.divider() 
         
         # ==============================================================================
-        # SEÇÃO DE GRÁFICOS DETALHADOS
+        # SEÇÃO DE GRÁFICOS DETALHADOS (AGORA COM PLOTLY)
         # ==============================================================================
-        
         st.header("Análises Gráficas Detalhadas")
 
         # --- Gráfico 1: Impacto Financeiro por Tipo de Ataque ---
         st.subheader("Impacto Financeiro Total por Tipo de Ataque") 
         try:
-            df_loss = df_original.groupby("Attack Type")["Financial Loss (in Million $)"].sum().reset_index()
-            fig1, ax1 = plt.subplots(figsize=(12, 6))
-            sns.barplot(data=df_loss, x="Attack Type", y="Financial Loss (in Million $)", palette="viridis", ax=ax1)
-            ax1.set_title('Impacto Financeiro Total por Tipo de Ataque', fontsize=16)
-            ax1.set_xlabel('Tipo de Ataque (Código)', fontsize=12)
-            ax1.set_ylabel('Prejuízo Total (em Milhões de $)', fontsize=12)
-            st.pyplot(fig1)
+            df_loss = df_original.groupby("Attack Type", as_index=False)["Financial Loss (in Million $)"].sum()
+            fig1 = px.bar(
+                df_loss,
+                x="Attack Type",
+                y="Financial Loss (in Million $)",
+                title="Impacto Financeiro Total por Tipo de Ataque",
+                template="plotly_dark",
+                color="Financial Loss (in Million $)",
+                labels={'Attack Type': 'Tipo de Ataque (Código)', 'Financial Loss (in Million $)': 'Prejuízo Total (em Milhões de $)'}
+            )
+            st.plotly_chart(fig1, use_container_width=True)
         except Exception as e:
             st.error(f"Erro ao gerar Gráfico 1: {e}")
 
         # --- Gráfico 2: Relação Usuários Afetados vs. Prejuízo ---
         st.subheader("Relação entre Usuários Afetados e Prejuízo")
         try:
-            fig2, ax2 = plt.subplots(figsize=(12, 6))
-            sns.regplot(data=df_original, x="Number of Affected Users", y="Financial Loss (in Million $)", scatter_kws={'alpha':0.5}, line_kws={'color':'red'}, ax=ax2)
-            ax2.set_title('Relação entre Usuários Afetados e Prejuízo Financeiro', fontsize=16)
-            ax2.set_xlabel('Número de Usuários Afetados', fontsize=12)
-            ax2.set_ylabel('Prejuízo (em Milhões de $)', fontsize=12)
-            st.pyplot(fig2)
+            fig2 = px.scatter(
+                df_original,
+                x="Number of Affected Users",
+                y="Financial Loss (in Million $)",
+                title="Relação entre Usuários Afetados e Prejuízo Financeiro",
+                template="plotly_dark",
+                color="Attack Type", # Colore por tipo de ataque para mais insight
+                trendline="ols",     # Adiciona linha de regressão
+                labels={'Number of Affected Users': 'Número de Usuários Afetados', 'Financial Loss (in Million $)': 'Prejuízo (em Milhões de $)'}
+            )
+            st.plotly_chart(fig2, use_container_width=True)
         except Exception as e:
             st.error(f"Erro ao gerar Gráfico 2: {e}")
 
         # --- Gráfico 3: Distribuição do Tempo de Resolução ---
         st.subheader("Distribuição do Tempo de Resolução de Incidentes")
         try:
-            fig3, ax3 = plt.subplots(figsize=(12, 6))
-            sns.histplot(df_original["Incident Resolution Time (in Hours)"], kde=True, bins=30, ax=ax3)
-            ax3.set_title('Distribuição do Tempo de Resolução de Incidentes', fontsize=16)
-            ax3.set_xlabel('Tempo de Resolução (em Horas)', fontsize=12)
-            ax3.set_ylabel('Frequência (Nº de Incidentes)', fontsize=12)
-            st.pyplot(fig3)
+            fig3 = px.histogram(
+                df_original,
+                x="Incident Resolution Time (in Hours)",
+                title="Distribuição do Tempo de Resolução de Incidentes",
+                template="plotly_dark",
+                nbins=30,
+                marginal="box", # Adiciona um box plot no topo
+                labels={'Incident Resolution Time (in Hours)': 'Tempo de Resolução (em Horas)', 'count': 'Frequência (Nº de Incidentes)'}
+            )
+            st.plotly_chart(fig3, use_container_width=True)
         except Exception as e:
             st.error(f"Erro ao gerar Gráfico 3: {e}")
 
@@ -306,18 +298,22 @@ elif pagina == "Análise Exploratória":
 
         try:
             if agregacao == "Soma":
-                df_dynamic = df_original.groupby(col_x)[col_y].sum().reset_index()
+                df_dynamic = df_original.groupby(col_x, as_index=False)[col_y].sum()
                 titulo_grafico = f'Soma de "{col_y}" por "{col_x}"'
             else:
-                df_dynamic = df_original.groupby(col_x)[col_y].mean().reset_index()
+                df_dynamic = df_original.groupby(col_x, as_index=False)[col_y].mean()
                 titulo_grafico = f'Média de "{col_y}" por "{col_x}"'
             
-            fig4, ax4 = plt.subplots(figsize=(12, 6))
-            sns.barplot(data=df_dynamic, x=col_x, y=col_y, palette="coolwarm", ax=ax4)
-            ax4.set_title(titulo_grafico, fontsize=16)
-            ax4.set_xlabel(col_x, fontsize=12)
-            ax4.set_ylabel(f"{agregacao} de {col_y}", fontsize=12)
-            st.pyplot(fig4)
+            fig4 = px.bar(
+                df_dynamic,
+                x=col_x,
+                y=col_y,
+                title=titulo_grafico,
+                template="plotly_dark",
+                color=col_y,
+                labels={col_x: col_x, col_y: f"{agregacao} de {col_y}"}
+            )
+            st.plotly_chart(fig4, use_container_width=True)
 
         except Exception as e:
             st.error(f"Erro ao gerar Gráfico Dinâmico: {e}")
