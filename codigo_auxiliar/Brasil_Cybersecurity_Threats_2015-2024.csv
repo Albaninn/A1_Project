@@ -1,0 +1,311 @@
+Country;Year;Attack Type;Target Industry;Financial Loss (in Million $);Number of Affected Users;Attack Source;Security Vulnerability Type;Defense Mechanism Used;Incident Resolution Time (in Hours)
+Brazil;2015;Ransomware;Retail;49.55;920172;Hacker Group;Weak Passwords;Antivirus;43
+Brazil;2023;DDoS;Telecommunications;51.84;699007;Hacker Group;Social Engineering;VPN;30
+Brazil;2023;Phishing;Healthcare;14.51;113777;Nation-state;Weak Passwords;VPN;27
+Brazil;2020;Phishing;Banking;17.75;739540;Hacker Group;Zero-day;Encryption;31
+Brazil;2016;DDoS;Education;96.98;140812;Nation-state;Unpatched Software;VPN;71
+Brazil;2015;Phishing;Banking;43.4;191625;Hacker Group;Social Engineering;VPN;65
+Brazil;2015;DDoS;IT;43.51;940656;Unknown;Weak Passwords;AI-based Detection;41
+Brazil;2022;Phishing;Telecommunications;29.02;456783;Nation-state;Zero-day;Encryption;10
+Brazil;2018;Malware;Education;6.63;274509;Hacker Group;Zero-day;Encryption;20
+Brazil;2021;DDoS;IT;70.26;740257;Unknown;Weak Passwords;Encryption;70
+Brazil;2022;DDoS;Retail;15.16;157034;Nation-state;Social Engineering;AI-based Detection;69
+Brazil;2015;Malware;Retail;78.13;71743;Hacker Group;Unpatched Software;VPN;35
+Brazil;2023;Man-in-the-Middle;IT;10.18;933883;Nation-state;Social Engineering;Encryption;41
+Brazil;2020;DDoS;Banking;76.98;708549;Unknown;Weak Passwords;Encryption;37
+Brazil;2020;DDoS;Retail;17.4;342253;Unknown;Weak Passwords;Encryption;22
+Brazil;2023;SQL Injection;Retail;56.76;774426;Hacker Group;Social Engineering;AI-based Detection;21
+Brazil;2019;SQL Injection;Banking;27.64;826256;Nation-state;Zero-day;VPN;50
+Brazil;2023;Malware;Telecommunications;62.77;422623;Nation-state;Zero-day;AI-based Detection;55
+Brazil;2021;Malware;Healthcare;83.06;937717;Unknown;Unpatched Software;Encryption;56
+Brazil;2016;Malware;Healthcare;83.88;155059;Unknown;Unpatched Software;Antivirus;29
+Brazil;2016;Malware;IT;99.29;273469;Insider;Social Engineering;AI-based Detection;67
+Brazil;2020;Malware;Banking;79.61;755029;Nation-state;Weak Passwords;Firewall;27
+Brazil;2017;Malware;Banking;99.22;660182;Insider;Weak Passwords;AI-based Detection;21
+Brazil;2023;Man-in-the-Middle;Banking;20.15;376174;Unknown;Social Engineering;Firewall;43
+Brazil;2016;SQL Injection;Education;55.83;758258;Unknown;Zero-day;Encryption;44
+Brazil;2016;DDoS;IT;17.12;988369;Hacker Group;Weak Passwords;AI-based Detection;26
+Brazil;2015;Ransomware;Healthcare;61.91;961557;Insider;Unpatched Software;Firewall;64
+Brazil;2021;SQL Injection;Healthcare;54.59;437634;Unknown;Weak Passwords;AI-based Detection;29
+Brazil;2018;Phishing;Banking;98.75;316891;Hacker Group;Social Engineering;Antivirus;55
+Brazil;2016;Man-in-the-Middle;Retail;72.78;11339;Hacker Group;Social Engineering;AI-based Detection;34
+Brazil;2018;Phishing;IT;13.89;30925;Insider;Zero-day;Encryption;43
+Brazil;2020;Man-in-the-Middle;Government;32.72;220978;Nation-state;Zero-day;VPN;47
+Brazil;2018;Phishing;Healthcare;99.14;456432;Insider;Weak Passwords;Antivirus;66
+Brazil;2016;Man-in-the-Middle;IT;75.51;37230;Unknown;Social Engineering;AI-based Detection;52
+Brazil;2018;SQL Injection;IT;98.38;661583;Insider;Social Engineering;Encryption;30
+Brazil;2017;Ransomware;IT;9.43;493087;Hacker Group;Unpatched Software;Encryption;44
+Brazil;2021;Man-in-the-Middle;IT;97.37;966570;Nation-state;Weak Passwords;Antivirus;32
+Brazil;2016;SQL Injection;Telecommunications;73.76;393189;Unknown;Zero-day;Antivirus;37
+Brazil;2024;DDoS;Banking;55.73;750979;Unknown;Social Engineering;AI-based Detection;30
+Brazil;2024;Ransomware;Government;32.21;482574;Nation-state;Unpatched Software;Firewall;22
+Brazil;2019;SQL Injection;Education;56.33;595157;Unknown;Zero-day;Encryption;41
+Brazil;2018;DDoS;Telecommunications;82.05;322527;Nation-state;Weak Passwords;Firewall;46
+Brazil;2023;Man-in-the-Middle;Retail;74.85;549300;Hacker Group;Weak Passwords;Antivirus;26
+Brazil;2021;Ransomware;Government;74.01;956893;Unknown;Social Engineering;Antivirus;49
+Brazil;2017;Malware;IT;9.59;912731;Nation-state;Zero-day;Firewall;4
+Brazil;2016;DDoS;Healthcare;8.01;534847;Nation-state;Zero-day;Firewall;3
+Brazil;2021;SQL Injection;Telecommunications;11.61;848702;Unknown;Weak Passwords;Antivirus;48
+Brazil;2022;Phishing;Banking;75.01;771434;Hacker Group;Social Engineering;AI-based Detection;38
+Brazil;2017;Phishing;Healthcare;68.99;526227;Hacker Group;Weak Passwords;VPN;62
+Brazil;2024;SQL Injection;Banking;33.06;644841;Insider;Weak Passwords;Antivirus;64
+Brazil;2023;SQL Injection;Healthcare;47.59;933271;Insider;Unpatched Software;Antivirus;30
+Brazil;2022;Phishing;Banking;98.06;884502;Insider;Unpatched Software;AI-based Detection;55
+Brazil;2024;DDoS;Telecommunications;36.69;738981;Unknown;Social Engineering;VPN;45
+Brazil;2023;Ransomware;Retail;66.38;608520;Hacker Group;Zero-day;VPN;14
+Brazil;2023;DDoS;IT;84.19;390409;Insider;Zero-day;AI-based Detection;31
+Brazil;2023;SQL Injection;IT;97.37;796195;Nation-state;Social Engineering;Firewall;20
+Brazil;2021;DDoS;Banking;14.72;126781;Insider;Weak Passwords;Antivirus;32
+Brazil;2021;DDoS;Government;56.2;713309;Hacker Group;Zero-day;Antivirus;51
+Brazil;2018;Malware;Education;5.27;850056;Hacker Group;Weak Passwords;VPN;65
+Brazil;2021;DDoS;Telecommunications;67.87;683261;Hacker Group;Unpatched Software;Antivirus;13
+Brazil;2019;Malware;Government;31.04;269271;Insider;Unpatched Software;Antivirus;58
+Brazil;2017;Man-in-the-Middle;IT;71.06;871891;Unknown;Social Engineering;Antivirus;52
+Brazil;2016;Phishing;Retail;27.99;30884;Nation-state;Unpatched Software;Antivirus;26
+Brazil;2024;Ransomware;IT;71.55;902924;Unknown;Social Engineering;Encryption;12
+Brazil;2024;Man-in-the-Middle;Telecommunications;27.13;943178;Nation-state;Weak Passwords;VPN;63
+Brazil;2023;Ransomware;Government;4.6;762006;Unknown;Weak Passwords;Antivirus;21
+Brazil;2016;DDoS;Government;80.09;555275;Unknown;Social Engineering;Antivirus;71
+Brazil;2017;SQL Injection;Telecommunications;24.05;446378;Insider;Unpatched Software;Antivirus;59
+Brazil;2015;Phishing;Retail;19.93;355008;Hacker Group;Unpatched Software;Antivirus;31
+Brazil;2018;Man-in-the-Middle;Banking;1.01;66191;Hacker Group;Weak Passwords;AI-based Detection;71
+Brazil;2020;Phishing;IT;57.43;212798;Insider;Social Engineering;Antivirus;31
+Brazil;2017;DDoS;IT;5.88;231114;Insider;Weak Passwords;AI-based Detection;37
+Brazil;2023;Man-in-the-Middle;Telecommunications;90.37;705678;Hacker Group;Zero-day;Antivirus;57
+Brazil;2023;Malware;Healthcare;61.56;907121;Unknown;Social Engineering;VPN;33
+Brazil;2017;Man-in-the-Middle;Telecommunications;43.71;57237;Unknown;Unpatched Software;Firewall;52
+Brazil;2022;Man-in-the-Middle;Banking;59.43;121504;Insider;Weak Passwords;AI-based Detection;32
+Brazil;2016;Malware;Government;72.73;47624;Nation-state;Weak Passwords;Firewall;70
+Brazil;2022;Ransomware;Banking;15.66;817169;Insider;Unpatched Software;Firewall;54
+Brazil;2015;Ransomware;Retail;89.93;673959;Hacker Group;Zero-day;Firewall;39
+Brazil;2023;Phishing;Government;72.57;720220;Unknown;Weak Passwords;Firewall;71
+Brazil;2015;Ransomware;Retail;91.03;879260;Hacker Group;Social Engineering;Antivirus;16
+Brazil;2016;SQL Injection;Retail;40.29;206598;Unknown;Zero-day;Encryption;45
+Brazil;2017;Man-in-the-Middle;IT;56.83;171305;Unknown;Unpatched Software;Firewall;54
+Brazil;2020;Man-in-the-Middle;Education;71.35;154966;Hacker Group;Zero-day;Antivirus;19
+Brazil;2023;Malware;Government;19.18;993826;Unknown;Zero-day;Firewall;7
+Brazil;2015;SQL Injection;Retail;74.74;562552;Nation-state;Unpatched Software;Encryption;37
+Brazil;2018;Malware;Education;33.12;724513;Nation-state;Zero-day;VPN;46
+Brazil;2017;SQL Injection;Government;40.66;651335;Insider;Weak Passwords;Encryption;21
+Brazil;2018;DDoS;Telecommunications;69.83;587034;Hacker Group;Weak Passwords;AI-based Detection;35
+Brazil;2015;Malware;IT;1.35;371048;Hacker Group;Zero-day;VPN;56
+Brazil;2018;Malware;Education;6.3;661644;Insider;Social Engineering;AI-based Detection;29
+Brazil;2022;Phishing;Healthcare;75.08;132520;Unknown;Zero-day;Antivirus;56
+Brazil;2021;DDoS;Education;69.37;666096;Hacker Group;Zero-day;Encryption;9
+Brazil;2016;Phishing;Government;35.94;372653;Hacker Group;Weak Passwords;VPN;60
+Brazil;2022;SQL Injection;Retail;25.85;632061;Nation-state;Zero-day;Antivirus;2
+Brazil;2015;DDoS;Retail;67.52;224815;Nation-state;Social Engineering;Firewall;32
+Brazil;2016;DDoS;Telecommunications;10.45;889928;Nation-state;Zero-day;Encryption;63
+Brazil;2024;Man-in-the-Middle;Education;8.94;451311;Unknown;Weak Passwords;Encryption;14
+Brazil;2018;Ransomware;Banking;30.61;910960;Nation-state;Social Engineering;Antivirus;31
+Brazil;2018;Malware;Healthcare;52.87;437283;Insider;Zero-day;Antivirus;30
+Brazil;2022;Man-in-the-Middle;Education;77.98;899279;Insider;Zero-day;Firewall;39
+Brazil;2023;Phishing;Banking;71.86;151590;Nation-state;Zero-day;Antivirus;30
+Brazil;2023;DDoS;IT;45.97;312555;Nation-state;Social Engineering;AI-based Detection;67
+Brazil;2019;Man-in-the-Middle;Government;76.39;311908;Unknown;Weak Passwords;Encryption;68
+Brazil;2022;Malware;Retail;78.03;660707;Insider;Unpatched Software;Firewall;11
+Brazil;2017;Ransomware;Education;80.5;279808;Insider;Social Engineering;Antivirus;60
+Brazil;2019;Malware;Government;12.04;713035;Nation-state;Social Engineering;AI-based Detection;59
+Brazil;2019;Man-in-the-Middle;Healthcare;7.44;739981;Unknown;Social Engineering;Antivirus;54
+Brazil;2024;Phishing;Retail;88.47;842945;Hacker Group;Weak Passwords;Firewall;67
+Brazil;2020;DDoS;Telecommunications;4.52;52302;Unknown;Social Engineering;VPN;58
+Brazil;2022;Phishing;Education;80.99;345577;Insider;Unpatched Software;Encryption;4
+Brazil;2023;Phishing;Banking;69.45;852592;Nation-state;Zero-day;AI-based Detection;12
+Brazil;2020;Phishing;Telecommunications;92.63;725707;Hacker Group;Weak Passwords;AI-based Detection;9
+Brazil;2024;SQL Injection;Education;14.69;783795;Insider;Weak Passwords;AI-based Detection;43
+Brazil;2021;Phishing;Telecommunications;83.79;90156;Hacker Group;Unpatched Software;Antivirus;65
+Brazil;2017;DDoS;Education;41.63;249211;Insider;Zero-day;AI-based Detection;59
+Brazil;2019;Ransomware;Telecommunications;23.63;581616;Insider;Social Engineering;Encryption;1
+Brazil;2019;Ransomware;Banking;10.1;47737;Hacker Group;Social Engineering;Encryption;69
+Brazil;2018;Man-in-the-Middle;IT;47.01;940513;Unknown;Unpatched Software;Encryption;10
+Brazil;2016;SQL Injection;Education;16.24;238092;Nation-state;Zero-day;AI-based Detection;32
+Brazil;2019;Man-in-the-Middle;Banking;14.64;880671;Hacker Group;Social Engineering;Firewall;66
+Brazil;2017;Phishing;Banking;9.25;437974;Hacker Group;Zero-day;Encryption;20
+Brazil;2019;DDoS;Telecommunications;59.86;899413;Nation-state;Weak Passwords;Encryption;11
+Brazil;2024;DDoS;IT;34.46;470727;Unknown;Weak Passwords;Firewall;8
+Brazil;2017;SQL Injection;Banking;66.78;698892;Unknown;Zero-day;AI-based Detection;24
+Brazil;2020;DDoS;Government;13.22;790415;Hacker Group;Zero-day;Encryption;52
+Brazil;2023;Ransomware;Telecommunications;32.18;812908;Hacker Group;Weak Passwords;Antivirus;12
+Brazil;2018;Phishing;Healthcare;2.52;414899;Unknown;Weak Passwords;Encryption;37
+Brazil;2017;DDoS;Retail;81.63;140371;Hacker Group;Zero-day;Encryption;13
+Brazil;2021;DDoS;Banking;84.41;230110;Unknown;Social Engineering;Antivirus;51
+Brazil;2018;Man-in-the-Middle;Retail;76.39;984;Insider;Unpatched Software;Firewall;56
+Brazil;2015;Phishing;IT;16.44;82841;Insider;Social Engineering;Encryption;36
+Brazil;2021;DDoS;Retail;75.1;740795;Hacker Group;Unpatched Software;Firewall;12
+Brazil;2021;Ransomware;Healthcare;78.08;989151;Unknown;Social Engineering;AI-based Detection;2
+Brazil;2018;DDoS;Retail;1.58;100633;Insider;Zero-day;Encryption;53
+Brazil;2021;SQL Injection;IT;92.4;654303;Hacker Group;Unpatched Software;AI-based Detection;15
+Brazil;2023;Phishing;Retail;42.69;309021;Unknown;Unpatched Software;Encryption;2
+Brazil;2024;DDoS;Government;24.23;889448;Hacker Group;Zero-day;VPN;20
+Brazil;2021;DDoS;Education;80.79;134998;Unknown;Zero-day;AI-based Detection;42
+Brazil;2020;Ransomware;IT;56.59;679131;Hacker Group;Weak Passwords;AI-based Detection;55
+Brazil;2022;Phishing;IT;92.58;176386;Hacker Group;Unpatched Software;VPN;63
+Brazil;2021;SQL Injection;IT;83.99;807733;Unknown;Weak Passwords;Encryption;18
+Brazil;2022;Phishing;Education;75.42;761590;Unknown;Unpatched Software;AI-based Detection;45
+Brazil;2022;DDoS;Education;17.68;366968;Nation-state;Social Engineering;VPN;47
+Brazil;2021;Man-in-the-Middle;Education;27.95;625370;Insider;Social Engineering;Firewall;24
+Brazil;2024;DDoS;Healthcare;92.34;375691;Insider;Zero-day;Encryption;21
+Brazil;2023;SQL Injection;Education;89.04;351850;Hacker Group;Social Engineering;Encryption;21
+Brazil;2020;Ransomware;Banking;99.9;429566;Nation-state;Zero-day;AI-based Detection;54
+Brazil;2024;Ransomware;Healthcare;6.67;553944;Hacker Group;Social Engineering;Encryption;64
+Brazil;2021;DDoS;Banking;96.23;649383;Unknown;Weak Passwords;Encryption;59
+Brazil;2019;DDoS;Healthcare;42.16;400214;Unknown;Zero-day;Firewall;58
+Brazil;2024;Ransomware;IT;74.06;813472;Hacker Group;Zero-day;VPN;17
+Brazil;2020;Phishing;Healthcare;18.79;267178;Nation-state;Social Engineering;Firewall;56
+Brazil;2021;SQL Injection;IT;34.32;673923;Hacker Group;Unpatched Software;Encryption;3
+Brazil;2018;Phishing;Retail;42.46;4136;Nation-state;Zero-day;Encryption;23
+Brazil;2020;Ransomware;IT;71.74;3432;Hacker Group;Unpatched Software;AI-based Detection;45
+Brazil;2015;Malware;Education;37.54;49473;Insider;Social Engineering;Firewall;51
+Brazil;2023;DDoS;Education;50.34;897521;Nation-state;Social Engineering;AI-based Detection;19
+Brazil;2015;SQL Injection;IT;47.2;16957;Unknown;Zero-day;Firewall;49
+Brazil;2020;SQL Injection;Retail;96.97;466897;Insider;Unpatched Software;VPN;58
+Brazil;2024;SQL Injection;Healthcare;41.05;175957;Hacker Group;Zero-day;Antivirus;69
+Brazil;2019;SQL Injection;Education;96.6;975019;Unknown;Unpatched Software;Firewall;38
+Brazil;2017;Man-in-the-Middle;Retail;17.99;506551;Unknown;Unpatched Software;Antivirus;53
+Brazil;2023;SQL Injection;Healthcare;72.9;434510;Hacker Group;Social Engineering;Firewall;72
+Brazil;2023;DDoS;Government;42.75;746425;Unknown;Zero-day;VPN;24
+Brazil;2021;Ransomware;Government;21.21;570810;Insider;Social Engineering;Firewall;72
+Brazil;2024;Man-in-the-Middle;Education;34.42;960625;Nation-state;Weak Passwords;Firewall;48
+Brazil;2018;Ransomware;Education;69.04;939146;Nation-state;Zero-day;Firewall;56
+Brazil;2016;DDoS;Telecommunications;94.1;838739;Unknown;Social Engineering;VPN;21
+Brazil;2020;Phishing;Retail;50.99;826159;Insider;Weak Passwords;VPN;3
+Brazil;2017;SQL Injection;Telecommunications;4.35;809757;Nation-state;Social Engineering;VPN;61
+Brazil;2019;SQL Injection;Healthcare;46.5;748146;Insider;Weak Passwords;AI-based Detection;13
+Brazil;2020;Man-in-the-Middle;Retail;16.26;527964;Insider;Zero-day;Firewall;28
+Brazil;2015;Phishing;Banking;29.61;593384;Unknown;Zero-day;Firewall;65
+Brazil;2024;DDoS;Healthcare;76.39;782425;Insider;Weak Passwords;Encryption;13
+Brazil;2017;DDoS;Healthcare;62.74;460264;Unknown;Social Engineering;Firewall;9
+Brazil;2022;SQL Injection;Healthcare;56.63;242677;Insider;Social Engineering;Encryption;21
+Brazil;2024;SQL Injection;IT;53.71;680584;Insider;Zero-day;AI-based Detection;5
+Brazil;2019;Ransomware;Healthcare;9.32;785564;Insider;Unpatched Software;Antivirus;70
+Brazil;2023;Man-in-the-Middle;Retail;59.18;610786;Nation-state;Social Engineering;AI-based Detection;31
+Brazil;2019;SQL Injection;Government;24.93;381105;Unknown;Weak Passwords;Encryption;3
+Brazil;2015;SQL Injection;IT;86.67;694491;Unknown;Unpatched Software;Firewall;65
+Brazil;2015;DDoS;Banking;18.87;976838;Unknown;Weak Passwords;Firewall;65
+Brazil;2018;Phishing;Education;57.59;257681;Nation-state;Zero-day;Antivirus;40
+Brazil;2020;Malware;Retail;89.71;529588;Nation-state;Weak Passwords;AI-based Detection;65
+Brazil;2020;Phishing;Banking;21.65;434936;Hacker Group;Zero-day;Encryption;24
+Brazil;2020;Phishing;Banking;34.5;372427;Insider;Weak Passwords;VPN;72
+Brazil;2021;Ransomware;Healthcare;67.25;796351;Nation-state;Weak Passwords;AI-based Detection;21
+Brazil;2023;SQL Injection;Telecommunications;31.54;839281;Insider;Weak Passwords;Encryption;25
+Brazil;2018;SQL Injection;Retail;84.79;99876;Insider;Unpatched Software;Firewall;56
+Brazil;2016;Malware;Retail;76.81;670642;Unknown;Unpatched Software;AI-based Detection;10
+Brazil;2017;Malware;Telecommunications;6.09;436100;Unknown;Zero-day;Encryption;12
+Brazil;2022;Malware;Telecommunications;40.08;459643;Nation-state;Weak Passwords;Antivirus;10
+Brazil;2017;Man-in-the-Middle;Healthcare;96.36;596078;Hacker Group;Weak Passwords;Encryption;10
+Brazil;2019;Ransomware;Banking;88.63;701522;Insider;Social Engineering;VPN;10
+Brazil;2023;Ransomware;Telecommunications;71.4;66852;Hacker Group;Weak Passwords;VPN;58
+Brazil;2016;Man-in-the-Middle;Banking;43.45;489853;Nation-state;Zero-day;AI-based Detection;28
+Brazil;2024;SQL Injection;Healthcare;69.57;269458;Insider;Zero-day;Firewall;15
+Brazil;2024;DDoS;Healthcare;70.0;484101;Hacker Group;Unpatched Software;VPN;9
+Brazil;2024;Phishing;Telecommunications;81.54;499671;Hacker Group;Weak Passwords;VPN;4
+Brazil;2017;Phishing;IT;26.62;955790;Nation-state;Zero-day;Encryption;44
+Brazil;2020;DDoS;Education;26.57;384988;Insider;Zero-day;AI-based Detection;19
+Brazil;2016;SQL Injection;Telecommunications;13.94;832297;Nation-state;Weak Passwords;AI-based Detection;69
+Brazil;2016;Phishing;Education;9.23;774750;Nation-state;Social Engineering;Firewall;70
+Brazil;2015;Malware;IT;74.03;956965;Hacker Group;Unpatched Software;Encryption;40
+Brazil;2022;Phishing;IT;26.02;251768;Unknown;Social Engineering;VPN;6
+Brazil;2018;DDoS;Healthcare;47.47;784099;Insider;Social Engineering;AI-based Detection;30
+Brazil;2022;Malware;IT;4.08;291590;Hacker Group;Zero-day;Antivirus;22
+Brazil;2024;Man-in-the-Middle;Healthcare;61.55;218189;Unknown;Weak Passwords;AI-based Detection;48
+Brazil;2017;Malware;Telecommunications;73.71;377769;Hacker Group;Zero-day;Firewall;38
+Brazil;2021;Phishing;Government;42.82;974362;Insider;Unpatched Software;Encryption;70
+Brazil;2024;Malware;IT;83.09;650093;Unknown;Social Engineering;Antivirus;58
+Brazil;2021;Man-in-the-Middle;Banking;3.69;566386;Insider;Unpatched Software;Encryption;45
+Brazil;2017;Phishing;Government;87.27;767721;Unknown;Weak Passwords;Encryption;9
+Brazil;2016;Phishing;Education;97.98;381599;Unknown;Weak Passwords;Encryption;66
+Brazil;2017;DDoS;Government;58.67;12372;Nation-state;Social Engineering;Encryption;29
+Brazil;2015;Malware;Healthcare;23.01;686119;Insider;Weak Passwords;VPN;25
+Brazil;2016;Man-in-the-Middle;Retail;14.04;117819;Nation-state;Zero-day;Antivirus;15
+Brazil;2015;Malware;Healthcare;75.72;184554;Unknown;Zero-day;AI-based Detection;39
+Brazil;2020;Malware;Government;50.61;294668;Nation-state;Social Engineering;Encryption;17
+Brazil;2015;SQL Injection;Healthcare;3.73;445422;Unknown;Unpatched Software;AI-based Detection;70
+Brazil;2016;Man-in-the-Middle;Banking;70.89;378949;Unknown;Weak Passwords;AI-based Detection;67
+Brazil;2020;Phishing;IT;94.02;581813;Unknown;Social Engineering;Encryption;20
+Brazil;2017;DDoS;Government;18.69;131940;Nation-state;Weak Passwords;Antivirus;34
+Brazil;2023;Man-in-the-Middle;Education;27.58;171936;Hacker Group;Weak Passwords;VPN;70
+Brazil;2022;DDoS;Telecommunications;79.5;789067;Hacker Group;Unpatched Software;Firewall;63
+Brazil;2018;Malware;Retail;83.42;538552;Hacker Group;Weak Passwords;AI-based Detection;65
+Brazil;2019;SQL Injection;Healthcare;91.03;86583;Unknown;Social Engineering;Firewall;47
+Brazil;2024;DDoS;Government;88.79;482307;Hacker Group;Zero-day;Firewall;62
+Brazil;2019;DDoS;Government;54.7;615305;Insider;Zero-day;Antivirus;6
+Brazil;2024;Ransomware;Retail;68.95;322146;Hacker Group;Social Engineering;Encryption;70
+Brazil;2019;SQL Injection;Healthcare;67.42;703282;Insider;Weak Passwords;Encryption;2
+Brazil;2021;Man-in-the-Middle;Banking;81.68;893986;Insider;Unpatched Software;Firewall;47
+Brazil;2024;Man-in-the-Middle;Healthcare;26.92;695427;Nation-state;Zero-day;Encryption;28
+Brazil;2021;Malware;Banking;34.68;786462;Unknown;Weak Passwords;Firewall;17
+Brazil;2018;SQL Injection;Education;52.7;861075;Hacker Group;Social Engineering;Encryption;7
+Brazil;2017;DDoS;Education;29.76;913276;Insider;Social Engineering;Encryption;57
+Brazil;2019;Phishing;Government;70.6;817268;Nation-state;Zero-day;VPN;1
+Brazil;2024;Malware;Government;78.97;724903;Unknown;Weak Passwords;Encryption;53
+Brazil;2016;Phishing;Education;97.45;267789;Insider;Weak Passwords;Encryption;26
+Brazil;2017;Man-in-the-Middle;Government;68.03;403770;Hacker Group;Weak Passwords;Encryption;22
+Brazil;2021;SQL Injection;Banking;50.61;772512;Hacker Group;Weak Passwords;Encryption;42
+Brazil;2015;Man-in-the-Middle;Banking;74.27;551388;Unknown;Unpatched Software;Encryption;51
+Brazil;2020;SQL Injection;Banking;68.05;912770;Unknown;Zero-day;AI-based Detection;67
+Brazil;2022;Man-in-the-Middle;Healthcare;40.94;987320;Unknown;Zero-day;AI-based Detection;44
+Brazil;2015;Phishing;Healthcare;84.83;794914;Insider;Social Engineering;Firewall;34
+Brazil;2019;DDoS;Telecommunications;36.98;198563;Hacker Group;Social Engineering;Firewall;24
+Brazil;2017;Phishing;Retail;3.18;520654;Nation-state;Social Engineering;VPN;53
+Brazil;2017;DDoS;Telecommunications;34.79;724790;Hacker Group;Unpatched Software;Firewall;64
+Brazil;2022;Malware;IT;19.26;377446;Unknown;Zero-day;AI-based Detection;12
+Brazil;2024;Malware;Healthcare;50.71;964191;Unknown;Weak Passwords;VPN;36
+Brazil;2018;SQL Injection;Retail;36.63;829742;Insider;Unpatched Software;Firewall;57
+Brazil;2017;DDoS;IT;72.48;860625;Unknown;Zero-day;Firewall;4
+Brazil;2021;SQL Injection;Retail;1.32;564277;Nation-state;Weak Passwords;Firewall;1
+Brazil;2020;SQL Injection;Education;50.41;350295;Insider;Unpatched Software;Encryption;5
+Brazil;2018;Malware;Telecommunications;96.22;445546;Nation-state;Weak Passwords;Firewall;45
+Brazil;2023;SQL Injection;Healthcare;7.33;486146;Insider;Zero-day;Firewall;12
+Brazil;2019;Ransomware;Telecommunications;87.41;919425;Nation-state;Unpatched Software;Encryption;45
+Brazil;2017;Ransomware;Healthcare;54.78;469735;Nation-state;Zero-day;Encryption;57
+Brazil;2018;Malware;Banking;87.13;99178;Nation-state;Unpatched Software;Antivirus;27
+Brazil;2024;Ransomware;Education;80.1;489369;Nation-state;Unpatched Software;Encryption;41
+Brazil;2024;DDoS;Retail;25.17;658226;Insider;Weak Passwords;VPN;52
+Brazil;2018;Malware;Banking;3.1;458185;Insider;Social Engineering;AI-based Detection;31
+Brazil;2022;Man-in-the-Middle;Education;91.69;581034;Insider;Social Engineering;VPN;67
+Brazil;2024;Phishing;IT;28.78;793783;Insider;Social Engineering;Firewall;17
+Brazil;2017;Ransomware;Government;58.18;824704;Hacker Group;Zero-day;Antivirus;30
+Brazil;2017;Phishing;IT;81.04;850794;Unknown;Social Engineering;Antivirus;69
+Brazil;2016;Malware;Education;83.93;102797;Unknown;Weak Passwords;Firewall;17
+Brazil;2022;Ransomware;Retail;1.42;510870;Unknown;Unpatched Software;AI-based Detection;35
+Brazil;2016;DDoS;IT;13.52;535205;Hacker Group;Social Engineering;AI-based Detection;53
+Brazil;2017;Ransomware;Healthcare;32.9;433987;Unknown;Zero-day;AI-based Detection;21
+Brazil;2021;Malware;Education;74.37;298836;Hacker Group;Social Engineering;Encryption;29
+Brazil;2018;Malware;Retail;27.82;526161;Unknown;Unpatched Software;AI-based Detection;12
+Brazil;2020;Phishing;Government;76.95;476308;Insider;Social Engineering;VPN;44
+Brazil;2024;Phishing;IT;72.33;182613;Unknown;Unpatched Software;AI-based Detection;26
+Brazil;2022;SQL Injection;Banking;5.85;52649;Nation-state;Unpatched Software;Encryption;57
+Brazil;2021;DDoS;Retail;89.79;454088;Hacker Group;Social Engineering;VPN;70
+Brazil;2018;Malware;Banking;31.56;940038;Hacker Group;Zero-day;Antivirus;24
+Brazil;2018;Phishing;Education;66.07;656031;Nation-state;Social Engineering;Encryption;36
+Brazil;2015;SQL Injection;Banking;89.39;988268;Unknown;Zero-day;VPN;44
+Brazil;2024;Ransomware;Government;57.7;691990;Insider;Weak Passwords;Antivirus;41
+Brazil;2018;Ransomware;Healthcare;4.51;909979;Nation-state;Social Engineering;VPN;65
+Brazil;2017;Man-in-the-Middle;Government;14.54;491794;Nation-state;Zero-day;Encryption;4
+Brazil;2018;Malware;Banking;17.52;334945;Nation-state;Weak Passwords;Antivirus;33
+Brazil;2021;Ransomware;Government;72.14;673933;Unknown;Zero-day;AI-based Detection;22
+Brazil;2023;Phishing;IT;23.01;195113;Unknown;Unpatched Software;Encryption;4
+Brazil;2022;Man-in-the-Middle;Retail;89.11;749386;Unknown;Unpatched Software;Firewall;16
+Brazil;2024;SQL Injection;IT;33.94;88304;Nation-state;Zero-day;Encryption;41
+Brazil;2019;Malware;Government;4.95;281096;Nation-state;Zero-day;AI-based Detection;2
+Brazil;2020;SQL Injection;Education;85.12;732802;Nation-state;Weak Passwords;Antivirus;62
+Brazil;2021;Malware;Government;79.56;334916;Nation-state;Weak Passwords;Firewall;35
+Brazil;2019;Malware;IT;8.31;989421;Unknown;Zero-day;Firewall;46
+Brazil;2021;SQL Injection;Banking;4.34;258021;Hacker Group;Unpatched Software;Encryption;46
+Brazil;2023;SQL Injection;Healthcare;76.58;626352;Hacker Group;Social Engineering;Encryption;33
+Brazil;2024;Ransomware;Healthcare;60.13;887531;Hacker Group;Social Engineering;Encryption;51
+Brazil;2023;Ransomware;Healthcare;30.45;480773;Hacker Group;Weak Passwords;Encryption;52
+Brazil;2017;Man-in-the-Middle;Education;67.55;287646;Nation-state;Social Engineering;VPN;68
+Brazil;2020;SQL Injection;Education;62.72;827349;Nation-state;Unpatched Software;VPN;68
+Brazil;2019;DDoS;Education;44.51;119319;Nation-state;Zero-day;Firewall;9
+Brazil;2019;Malware;IT;54.26;883977;Nation-state;Unpatched Software;Antivirus;47
+Brazil;2019;Phishing;Retail;35.61;43771;Nation-state;Zero-day;Encryption;49
+Brazil;2020;DDoS;Healthcare;53.42;545588;Insider;Unpatched Software;Antivirus;54
+Brazil;2016;Ransomware;Education;5.51;740421;Unknown;Social Engineering;Encryption;59
+Brazil;2020;Malware;Telecommunications;23.21;850214;Unknown;Social Engineering;Antivirus;45
+Brazil;2015;Ransomware;Banking;63.14;545908;Insider;Social Engineering;AI-based Detection;2
+Brazil;2016;Man-in-the-Middle;Education;19.59;647998;Insider;Weak Passwords;AI-based Detection;38
+Brazil;2015;Malware;Healthcare;88.08;905770;Nation-state;Zero-day;VPN;9
+Brazil;2021;Ransomware;Education;18.11;849791;Nation-state;Unpatched Software;VPN;53
+Brazil;2023;SQL Injection;Telecommunications;30.28;892843;Hacker Group;Zero-day;VPN;26
+Brazil;2017;SQL Injection;IT;32.97;734737;Nation-state;Weak Passwords;AI-based Detection;30

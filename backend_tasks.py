@@ -59,7 +59,7 @@ def processar_nova_base(uploaded_file, db_path, table_name):
         print("Analisando cabeçalhos de todos os arquivos...")
         colunas_master = set()
         for arquivo in lista_arquivos_csv:
-            df_header = pd.read_csv(arquivo, nrows=0, low_memory=False, encoding='latin1')
+            df_header = pd.read_csv(arquivo, nrows=0, encoding='latin1', sep=None, engine='python')
             df_header.columns = df_header.columns.str.strip().str.replace('\n', '')
             colunas_master.update(df_header.columns)
         
@@ -79,7 +79,7 @@ def processar_nova_base(uploaded_file, db_path, table_name):
 
         for arquivo in lista_arquivos_csv:
             print(f"Processando arquivo em pedaços: {Path(arquivo).name}...")
-            chunk_reader = pd.read_csv(arquivo, chunksize=100000, low_memory=False, encoding='latin1')
+            chunk_reader = pd.read_csv(arquivo, chunksize=100000, encoding='latin1', sep=None, engine='python')
             
             for i, chunk in enumerate(chunk_reader):
                 chunk.columns = chunk.columns.str.strip().str.replace('\n', '')
