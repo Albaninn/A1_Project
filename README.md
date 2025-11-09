@@ -111,7 +111,7 @@ Recarregamento: A aplicação será recarregada automaticamente.
 Explorar: Agora, com os dados e o modelo carregados, você pode navegar livremente entre as páginas "Análise Exploratória" e "Simulador de Predição".
 
 📂 Estrutura do Projeto
-
+```
 A1_Project/
 │
 ├── .streamlit/
@@ -126,7 +126,7 @@ A1_Project/
 ├── requirements.txt        # (Lista de dependências do Python)
 ├── README.md               # (Esta documentação)
 └── CyberSec.zip            # (Exemplo de dados brutos para upload)
-
+```
 
 👥 Integrantes do Grupo
 
