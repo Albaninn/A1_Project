@@ -1,116 +1,114 @@
-🚀 Projeto Final: Análise de Cibersegurança com Machine Learning
+# 🚀 Projeto Final: Análise de Cibersegurança com Machine Learning
 
-Trabalho final desenvolvido para a disciplina de Tópicos Especiais em Software.
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![Scikit-learn](https://img.shields.io/badge/SciKit--Learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
 
-O objetivo deste projeto é uma aplicação web completa, desenvolvida em Python com Streamlit, capaz de realizar a ingestão, processamento, análise exploratória e modelagem de Machine Learning sobre um conjunto de dados de incidentes de cibersegurança.
+> Trabalho final desenvolvido para a disciplina de Tópicos Especiais em Software.
+>
+> O objetivo deste projeto é uma aplicação web completa, desenvolvida em Python com Streamlit, capaz de realizar a ingestão, processamento, análise exploratória e modelagem de Machine Learning sobre um conjunto de dados de incidentes de cibersegurança.
+>
+> A aplicação cumpre todos os requisitos do trabalho, incluindo o upload dinâmico de novas bases de dados, re-treinamento automático do modelo e um dashboard analítico interativo.
 
-A aplicação cumpre todos os requisitos do trabalho, incluindo o upload dinâmico de novas bases de dados, re-treinamento automático do modelo e um dashboard analítico interativo.
+---
 
-🌟 Recursos Principais
+## 🌟 Recursos Principais
 
 A aplicação é dividida em três páginas principais:
 
-1. Atualizar Base de Dados (O "Motor")
+### 1. Atualizar Base de Dados (O "Motor")
 
 Esta página é o ponto de entrada do sistema e cumpre o requisito de "flexibilidade" e "re-treinamento dinâmico".
 
-Upload Flexível: Permite o upload de um novo conjunto de dados no formato .zip (contendo múltiplos CSVs) ou um único arquivo .csv.
+* **Upload Flexível**: Permite o upload de um novo conjunto de dados no formato `.zip` (contendo múltiplos CSVs) ou um único arquivo `.csv`.
+* **Detecção Inteligente**: Detecta automaticamente o separador do CSV (vírgula ou ponto-e-vírgula). (Esta funcionalidade estava no seu código original).
+* **Processamento Robusto**: Executa todo o pipeline de ETL (definido no `backend_tasks.py`) para limpar, otimizar tipos e salvar os dados em um banco **SQLite** (`CyberSec.db`).
+* **Re-treinamento Automático**: Após o processamento dos dados, o sistema automaticamente re-treina o modelo de Machine Learning (**Random Forest Classifier**) e o salva (`modelo_classificador.pkl`) para ser usado no simulador.
 
-Detecção Inteligente: Detecta automaticamente o separador do CSV (vírgula ou ponto-e-vírgula).
+### 2. Análise Exploratória (O "Dashboard")
 
-Processamento Robusto: Executa todo o pipeline de ETL (detalhado em etapas_tratamento.md) para limpar, otimizar tipos e salvar os dados em um banco SQLite (CyberSec.db).
+Um painel de BI (como o Power BI) construído diretamente em Python.
 
-Re-treinamento Automático: Após o processamento dos dados, o sistema automaticamente re-treina o modelo de Machine Learning (Random Forest Classifier) e o salva (modelo_classificador.pkl) para ser usado no simulador.
+* **Visualizações Interativas**: Usa **Plotly** para gerar gráficos dinâmicos (mapa coroplético, barras, dispersão, histograma).
+* **Métricas de KPI**: Apresenta um resumo com os principais indicadores (Total de Incidentes, Prejuízo Total, etc.).
+* **Análise de Padrões**: Permite que o usuário estratégico (Gestor, CISO) identifique visualmente quais ataques são mais caros, mais frequentes e qual a eficiência da equipe de resposta.
 
-2. Análise Exploratória (O "Dashboard")
+### 3. Simulador de Predição (O "Modelo de ML")
 
-Um painel de BI (como o Power BI) construído em cima da base de dados carregada.
+Esta é a ferramenta preditiva do sistema, que usa o modelo treinado.
 
-Resumo Executivo: Métricas principais (Total de Incidentes, Prejuízo Total) e KPIs interativos (Tipos de Ataque Únicos, Países Únicos) com tooltips.
+* **Inferência em Tempo Real**: O usuário (Tático/Operacional) insere as características de um incidente *em andamento*.
+* **Previsão de Probabilidade**: O modelo **Random Forest** carregado (`.pkl`) prevê não apenas o tipo de ataque mais provável, mas a **distribuição de probabilidade** (ex: 40% SQL Injection, 21% Ransomware).
+* **Apoio à Decisão**: Ajuda a equipe de resposta a incidentes a **priorizar ações** (mudando de uma postura Reativa para Proativa) e acionar a equipe correta.
 
-Análise Geográfica: Um mapa-múndi coroplético (usando Plotly) que traduz os códigos de país (ex: 'UK') para seus códigos ISO (ex: 'GBR') e colore o mapa com base na frequência de incidentes.
+---
 
-Distribuição de Frequência: Tabelas que detalham a contagem e o percentual de Tipos de Ataque, Indústrias Alvo e Mecanismos de Defesa.
+## 🛠️ Tecnologias Utilizadas
 
-Gráficos Interativos: Todos os gráficos são feitos com Plotly Express, permitindo que o usuário passe o mouse para ver valores exatos.
+* **Python 3.10+**
+* **Streamlit**: Para a construção da interface web (frontend).
+* **Pandas**: Para manipulação e processamento de dados (ETL).
+* **Scikit-learn**: Para todo o pipeline de Machine Learning (Engenharia de Features, Treinamento, `RandomForestClassifier`).
+* **Plotly Express**: Para a criação dos gráficos interativos.
+* **Joblib**: Para salvar e carregar o modelo de ML treinado (`.pkl`).
+* **SQLite**: (Nativo do Python) Para armazenar os dados processados de forma otimizada.
 
-Gerador de Gráfico Dinâmico: Uma ferramenta que permite ao usuário criar seu próprio gráfico de barras, escolhendo a categoria (Eixo X), o valor (Eixo Y) e a agregação (Soma ou Média).
+---
 
-3. Simulador de Predição (O "Modelo de ML")
+## ⚙️ Como Executar o Projeto Localmente
 
-Uma interface que permite ao usuário interagir diretamente com o modelo de Machine Learning treinado.
+1.  **Clone o repositório:**
+    ```bash
+    git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
+    cd seu-repositorio
+    ```
 
-Formulário de Input: O usuário pode preencher as características de um incidente (Prejuízo, País, Indústria Alvo, etc.).
+2.  **Crie um ambiente virtual (Recomendado):**
+    ```bash
+    python -m venv venv
+    - No macOS/Linux: source venv/bin/activate  
+    - No Windows: venv\Scripts\activate
+    ```
 
-Inputs Opcionais: O usuário pode deixar campos em branco. O sistema trata essa "informação nula" preenchendo-a com o valor estatisticamente mais neutro (mediana ou moda) antes de consultar o modelo.
+3.  **Instale as dependências:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-Predição em Tempo Real: O sistema usa o modelo RandomForestClassifier para prever o Attack Type (Tipo de Ataque) mais provável.
+4.  **Execute a aplicação Streamlit:**
+    ```bash
+    streamlit run app.py
+    ```
 
-Análise de Probabilidade: Além da previsão final, o app exibe uma tabela com a pontuação de probabilidade para cada tipo de ataque possível, mostrando a "confiança" do modelo.
+5.  Acesse `http://localhost:8501` no seu navegador.
 
-🛠️ Instalação e Execução
+---
 
-Siga os passos abaixo para configurar e executar o projeto em sua máquina local.
+## 🚀 Como Usar a Aplicação (Workflow)
 
-Pré-requisitos
+1.  **Primeira Execução:**
+    * Ao iniciar a aplicação pela primeira vez, o sistema detectará que o banco de dados (`CyberSec.db`) e o modelo (`modelo_classificador.pkl`) não existem.
 
-Python (versão 3.8 ou superior)
+2.  **Upload:**
+    * Você será direcionado automaticamente para a página "**Atualizar Base de Dados**".
 
-Git (para clonar o repositório)
+3.  **Processamento:**
+    * Faça o upload do arquivo de dados (ex: CyberSec.zip ou Brasil_Cybersecurity_Threats_2015-2024.csv).
 
-1. Clonar o Repositório
+4.  **Treinamento:**
+    * Clique no botão "**Processar e Treinar Nova Base**". Aguarde alguns minutos enquanto o backend processa os dados e treina o modelo.
 
-Abra seu terminal e clone o projeto:
+5.  **Recarregamento:**
+    * A aplicação será recarregada automaticamente.
 
-git clone https://[URL-DO-SEU-REPOSITORIO-GIT].git
-cd A1_Project
+6.  **Explorar:**
+    * Agora, com os dados e o modelo carregados, você pode navegar livremente entre as páginas "**Análise Exploratória**" e "**Simulador de Predição**".
 
+---
 
-2. Criar um Ambiente Virtual (Recomendado)
+## 📂 Estrutura do Projeto
 
-É uma boa prática isolar as dependências do projeto:
-
-# Criar o ambiente
-python -m venv venv
-
-# Ativar no Windows
-.\venv\Scripts\activate
-
-# Ativar no macOS/Linux
-source venv/bin/activate
-
-
-3. Instalar as Dependências
-
-Este projeto usa um arquivo requirements.txt para gerenciar todas as bibliotecas. Instale todas de uma vez executando:
-
-pip install -r requirements.txt
-
-
-4. Executar a Aplicação
-
-Com as dependências instaladas, inicie o servidor do Streamlit:
-
-streamlit run app.py
-
-
-O Streamlit irá abrir o seu navegador padrão automaticamente, apontando para http://localhost:8501.
-
-🚀 Como Usar a Aplicação (Workflow)
-
-Primeira Execução: Ao iniciar a aplicação pela primeira vez, o sistema detectará que o banco de dados (CyberSec.db) e o modelo (modelo_classificador.pkl) não existem.
-
-Upload: Você será direcionado automaticamente para a página "Atualizar Base de Dados".
-
-Processamento: Faça o upload do arquivo de dados (ex: CyberSec.zip ou Brasil_Cybersecurity_Threats_2015-2024.csv).
-
-Treinamento: Clique no botão "Processar e Treinar Nova Base". Aguarde alguns minutos enquanto o backend processa os dados e treina o modelo.
-
-Recarregamento: A aplicação será recarregada automaticamente.
-
-Explorar: Agora, com os dados e o modelo carregados, você pode navegar livremente entre as páginas "Análise Exploratória" e "Simulador de Predição".
-
-📂 Estrutura do Projeto
 ```
 A1_Project/
 │
