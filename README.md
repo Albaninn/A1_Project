@@ -126,9 +126,17 @@ A1_Project/
 └── CyberSec.zip            # (Exemplo de dados brutos para upload)
 ```
 
-👥 Integrantes do Grupo
-```
-CAIO HENRIQUE PORCEL
-KAUAN ALEXANDRE MENDES DA SILVA
-LUCAS ALBANO RIBAS SERENATO
-```
+---
+
+## 📊 Apresentação e Base de dados utilizada
+- [Apresentação no Canvas](https://www.canva.com/design/DAG3kcG_G7A/KoHOwSSRpPu-q8qupP0cOg/edit?utm_content=DAG3kcG_G7A&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+- [Base de dados Global Cybersecurity Threats (2015-2024)](https://www.kaggle.com/datasets/atharvasoundankar/global-cybersecurity-threats-2015-2024)
+  
+---
+
+### 👥 Integrantes e Perfis no LinkedIn
+
+- [CAIO HENRIQUE PORCEL](https://www.linkedin.com/in/caio-henrique-porcel-702340243/)
+- [KAUAN ALEXANDRE MENDES DA SILVA](https://www.linkedin.com/in/mendeskauan/)
+- [LUCAS ALBANO RIBAS SERENATO](https://www.linkedin.com/in/lucas-albano-serenato-345306200/)
+
