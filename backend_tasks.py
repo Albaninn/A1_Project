@@ -113,7 +113,7 @@ def processar_nova_base(uploaded_file, db_path, table_name):
         
         print("Criando nova tabela otimizada...")
         conn.execute(f"DROP TABLE IF EXISTS {table_name_new}")
-        create_table_sql = f"CREATE TABLE {table_name_new} ({', '.join([f'\"{col}\" {tipo}' for col, tipo in dtype_map.items()])})"
+        create_table_sql = f"CREATE TABLE {table_name_new} ({', '.join([f'"{col}" {tipo}' for col, tipo in dtype_map.items()])})"
         conn.execute(create_table_sql)
 
         print("Copiando dados para a nova tabela...")
