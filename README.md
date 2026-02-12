@@ -1,6 +1,6 @@
 # 🚀 Projeto Final: Análise de Cibersegurança com Machine Learning
 
-[![en](https://img.shields.io/badge/lang-en-red.svg)](README.eng.md)
+[![en](https://img.shields.io/badge/lang-en-red.svg)](README.en.md)
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
@@ -125,6 +125,7 @@ A1_Project/
 ├── backend_tasks.py        # (O "motor" de processamento e ML - Pandas/Sklearn)
 ├── requirements.txt        # (Lista de dependências do Python)
 ├── README.md               # (Esta documentação)
+├── README.en.md            # (Documentação em inglês)
 └── CyberSec.zip            # (Exemplo de dados brutos para upload)
 ```
 
